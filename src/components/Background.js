@@ -14,7 +14,9 @@ d3.chart('Background', {
       return chart.scale(d);
     };
 
-    this.layer('fill', this.base.append('g'), {
+    this.layer('Background-rects', this.base.append('g').attr({
+      'class': 'Background-rects'
+    }), {
       dataBind: function(data) {
         return reuse(this.selectAll('rect').data(data, function(d) {
           return d;
@@ -27,7 +29,8 @@ d3.chart('Background', {
       insert: function() {
         return this.append('rect')
           .attr({
-            height: chart.height
+            height: chart.height,
+            'class': 'Background-rect'
           });
       },
       events: {
@@ -49,7 +52,9 @@ d3.chart('Background', {
       }
     });
 
-    this.layer('labels', this.base.append('g'), {
+    this.layer('Background-labels', this.base.append('g').attr({
+      'class': 'Background-labels'
+    }), {
       dataBind: function(data) {
         return reuse(this.selectAll('text').data(data, function(d) {
           return d;
@@ -62,7 +67,8 @@ d3.chart('Background', {
       insert: function() {
         return this.append('text')
           .attr({
-            y: chart.yOffset + 25
+            y: chart.yOffset + 25,
+            'class': 'Background-label'
           });
       },
       events: {
@@ -70,8 +76,7 @@ d3.chart('Background', {
           this.attr({
             x: function(d) {
               return xPosition(d) + 10;
-            },
-            'class': 'Background-label'
+            }
           })
           .text(function(d) {
             return moment(d).tz(chart.timezone).format('MMM Do h:mm a');

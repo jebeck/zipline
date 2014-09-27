@@ -64,8 +64,18 @@ d3.chart('Zipline', {
               yOffset: i * chart.height/numSlices
             });
             slice.data = d.data;
-            slice.draw(d.data(bounds));
             slices.push(slice);
+            _.each(d.plot, function(p) {
+              var sliver = p.chart.create(this, {
+                height: chart.height/numSlices,
+                opts: p.opts,
+                timezone: chart.timezone,
+                xScale: chart.scale,
+                yOffset: i * chart.height/numSlices
+              });
+              sliver.data = p.data;
+              slices.push(sliver);
+            }, this);
           });
         }
       }
@@ -113,10 +123,9 @@ module.exports = {
       },
       location: {
         bounds: [
-          moment(now).subtract(12, 'hours').toDate(),
-          moment(now).add(12, 'hours').toDate()
-        ],
-        center: now.toDate()
+          moment(now).tz(timezone).startOf('year').toDate(),
+          moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
+        ]
       },
       timezone: timezone
     };
