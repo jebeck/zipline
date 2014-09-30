@@ -5,7 +5,10 @@ require('./less/Zip.less');
 
 var zipline = {
   components: {
-    Background: require('./components/Background')
+    horizontal: {
+      Background: require('./components/horizontal/Background')
+    },
+    vertical: {}
   },
   util: {
     reuse: require('./util/reusenodes'),

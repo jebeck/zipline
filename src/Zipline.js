@@ -4,10 +4,15 @@ var moment = require('moment-timezone');
 
 var scales = require('./util/scales');
 
+// match 10px value in Zip.less
+// unless can figure out a way to set it in both files via option
+// best to hardcode it to maintain consistency
+var SCROLLGUTTER = 10;
+
 d3.chart('Zipline', {
   initialize: function() {
     this.width = this.base.attr('width');
-    this.height = this.base.attr('height') - 10;
+    this.height = this.base.attr('height');
     this.emitter = new EventEmitter();
 
     var chart = this;
@@ -21,6 +26,56 @@ d3.chart('Zipline', {
         moment(dt).toDate(),
         moment(dt).add(1, 'days').toDate()
       ];
+    };
+
+    var makeHorizontalSliceFn = function(bounds, numSlices) {
+      return function(d, i) {
+        var slice = d.chart.create(this, {
+          height: (chart.height - SCROLLGUTTER)/numSlices,
+          opts: d.opts,
+          timezone: chart.timezone,
+          xScale: chart.scale,
+          yOffset: i * (chart.height - SCROLLGUTTER)/numSlices
+        });
+        slice.data = d.data;
+        slices.push(slice);
+        _.each(d.plot, function(p) {
+          var sliver = p.chart.create(this, {
+            height: (chart.height - SCROLLGUTTER)/numSlices,
+            opts: p.opts,
+            timezone: chart.timezone,
+            xScale: chart.scale,
+            yOffset: i * (chart.height - SCROLLGUTTER)/numSlices
+          });
+          sliver.data = p.data;
+          slices.push(sliver);
+        }, this);
+      };
+    };
+
+    var makeVerticalSliceFn = function(bounds, numSlices) {
+      return function(d, i) {
+        var slice = d.chart.create(this, {
+          width: (chart.width - SCROLLGUTTER)/numSlices,
+          opts: d.opts,
+          timezone: chart.timezone,
+          xOffset: i * (chart.width - SCROLLGUTTER)/numSlices,
+          yScale: chart.scale
+        });
+        slice.data = d.data;
+        slices.push(slice);
+        _.each(d.plot, function(p) {
+          var sliver = p.chart.create(this, {
+            width: (chart.width - SCROLLGUTTER)/numSlices,
+            opts: p.opts,
+            timezone: chart.timezone,
+            xOffset: i * (chart.width - SCROLLGUTTER)/numSlices,
+            yScale: chart.scale
+          });
+          sliver.data = p.data;
+          slices.push(sliver);
+        }, this);
+      };
     };
 
     scrollContainer.on('scroll', function() {
@@ -52,31 +107,13 @@ d3.chart('Zipline', {
         enter: function() {
           var bounds = chart.location.bounds;
           var numSlices = this.data().length;
+          var sliceFn = chart.scrollDirection === 'horizontal' ?
+            makeHorizontalSliceFn(bounds, numSlices) :
+              makeVerticalSliceFn(bounds, numSlices);
           this.attr({
             id: function(d) { return d.id; }
           })
-          .each(function(d, i) {
-            var slice = d.chart.create(this, {
-              height: chart.height/numSlices,
-              opts: d.opts,
-              scale: chart.scale,
-              timezone: chart.timezone,
-              yOffset: i * chart.height/numSlices
-            });
-            slice.data = d.data;
-            slices.push(slice);
-            _.each(d.plot, function(p) {
-              var sliver = p.chart.create(this, {
-                height: chart.height/numSlices,
-                opts: p.opts,
-                timezone: chart.timezone,
-                xScale: chart.scale,
-                yOffset: i * chart.height/numSlices
-              });
-              sliver.data = p.data;
-              slices.push(sliver);
-            }, this);
-          });
+          .each(sliceFn);
         }
       }
     });
@@ -135,14 +172,14 @@ module.exports = {
     var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, opts.timespan.initial);
     var scaleExtent = Math.abs(scale(opts.timespan.total[0]) - scale(opts.timespan.total[1]));
 
-    var width = horizontal ? scaleExtent : el.offsetWidth;
-    var height = horizontal ? el.offsetHeight : scaleExtent;
+    var width = horizontal ? scaleExtent : el.offsetWidth - SCROLLGUTTER;
+    var height = horizontal ? el.offsetHeight - SCROLLGUTTER : scaleExtent;
 
     chart = d3.select(el)
       .append('svg')
       .attr({
         width: width,
-        height: height - 10
+        height: height
       })
       .chart('Zipline')
       .location(opts.location)
