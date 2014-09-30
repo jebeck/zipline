@@ -7,7 +7,7 @@ var moment = require('moment-timezone');
 
 var zipline = require('../src/');
 var Chart = zipline.Zipline;
-var Background = zipline.components.Background;
+var Background = zipline.components.horizontal.Background;
 var scales = zipline.util.scales;
 
 var diabetes = require('../diabetes/');

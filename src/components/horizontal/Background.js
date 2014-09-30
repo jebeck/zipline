@@ -2,7 +2,7 @@ var _ = require('lodash');
 var d3 = window.d3;
 var moment = require('moment-timezone');
 
-var reuse = require('../util/reusenodes');
+var reuse = require('../../util/reusenodes');
 
 d3.chart('Background', {
   initialize: function() {
@@ -11,7 +11,7 @@ d3.chart('Background', {
     var fill;
 
     var xPosition = function(d) {
-      return chart.scale(d);
+      return chart.xScale(d);
     };
 
     this.layer('Background-rects', this.base.append('g').attr({
@@ -39,7 +39,7 @@ d3.chart('Background', {
             x: xPosition,
             y: chart.yOffset,
             width: function(d) {
-              return chart.scale(d3.time.hour.utc.offset(d, chart.step)) - chart.scale(d);
+              return chart.xScale(d3.time.hour.utc.offset(d, chart.step)) - chart.xScale(d);
             },
             fill: function(d) {
               return chart.opts.fillScale(moment(d).tz(chart.timezone).hour());
@@ -98,9 +98,9 @@ d3.chart('Background', {
     this.opts = opts;
     return this;
   },
-  scale: function(scale) {
-    if (!arguments.length) { return this.scale; }
-    this.scale = scale;
+  xScale: function(xScale) {
+    if (!arguments.length) { return this.xScale; }
+    this.xScale = xScale;
     return this;
   },
   step: function(step) {
@@ -145,7 +145,7 @@ module.exports = {
     chart = d3.select(el).chart('Background')
       .height(opts.height)
       .opts(opts.opts)
-      .scale(opts.scale)
+      .xScale(opts.xScale)
       .step(opts.step)
       .timezone(opts.timezone)
       .yOffset(opts.yOffset);
