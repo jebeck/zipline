@@ -1,2 +1,7 @@
+*.pxm
 data/
+diabetes/less/colors.less
+diabetes/util/colors.js
 node_modules/
+src/less/colors.less
+src/util/colors.js
