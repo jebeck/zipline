@@ -10,7 +10,8 @@ module.exports = {
     loaders: [
       {test: /\.json$/, loader: 'json-loader'},
       {test: /\.js$/, loader: 'jsx-loader'},
-      {test: /\.less$/, loader: 'style-loader!css-loader!autoprefixer-loader!less-loader'}
+      {test: /\.less$/, loader: 'style-loader!css-loader!autoprefixer-loader!less-loader'},
+      {test: /\.ttf$/, loader: 'url-loader?mimetype=application/x-font-ttf'}
     ]
   }
 };
