@@ -11,6 +11,8 @@ var zipline = {
     vertical: {}
   },
   util: {
+    colors: require('./util/colors'),
+    rgbtohex: require('./util/rgbtohex'),
     reuse: require('./util/reusenodes'),
     scales: require('./util/scales')
   },

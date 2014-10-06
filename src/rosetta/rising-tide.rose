@@ -1,0 +1,7 @@
+$background = #0F1340
+
+$label = #FFFFFF
+
+interval:
+    $start = #004973
+    $end = #028A8F

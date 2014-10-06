@@ -9,6 +9,12 @@ var zipline = require('../src/');
 var Chart = zipline.Zipline;
 var Background = zipline.components.horizontal.Background;
 var scales = zipline.util.scales;
+var colors = zipline.util.colors;
+var convert = zipline.util.rgbtohex;
+var intervalColors = {
+  start: convert(colors.interval.start),
+  end: convert(colors.interval.end)
+};
 
 var diabetes = require('../diabetes/');
 var CBG = diabetes.plot.CBG;
@@ -61,7 +67,7 @@ var App = React.createClass({
       },
       id: 'Background/top',
       opts: {
-        fillScale: scales.hourcolorscale('#872928', '#BC373F')
+        fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
       },
       plot: [{
         chart: CBG,
@@ -88,7 +94,7 @@ var App = React.createClass({
       },
       id: 'Background/bottom',
       opts: {
-        fillScale: scales.hourcolorscale('#872928', '#BC373F')
+        fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
       },
       plot: [{
         chart: CBG,
