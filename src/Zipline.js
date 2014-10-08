@@ -34,8 +34,8 @@ d3.chart('Zipline', {
         var slice = d.chart.create(this, {
           height: (chart.height - SCROLLGUTTER)/numSlices,
           opts: d.opts,
-          timezone: chart.timezone,
-          xScale: chart.scale,
+          timezone: chart.timezone(),
+          xScale: chart.scale(),
           yOffset: i * (chart.height - SCROLLGUTTER)/numSlices
         });
         slice.data = d.data;
@@ -44,8 +44,8 @@ d3.chart('Zipline', {
           var sliver = p.chart.create(this, {
             height: (chart.height - SCROLLGUTTER)/numSlices,
             opts: p.opts,
-            timezone: chart.timezone,
-            xScale: chart.scale,
+            timezone: chart.timezone(),
+            xScale: chart.scale(),
             yOffset: i * (chart.height - SCROLLGUTTER)/numSlices
           });
           sliver.data = p.data;
@@ -59,9 +59,9 @@ d3.chart('Zipline', {
         var slice = d.chart.create(this, {
           width: (chart.width - SCROLLGUTTER)/numSlices,
           opts: d.opts,
-          timezone: chart.timezone,
+          timezone: chart.timezone(),
           xOffset: i * (chart.width - SCROLLGUTTER)/numSlices,
-          yScale: chart.scale
+          yScale: chart.scale()
         });
         slice.data = d.data;
         slices.push(slice);
@@ -69,9 +69,9 @@ d3.chart('Zipline', {
           var sliver = p.chart.create(this, {
             width: (chart.width - SCROLLGUTTER)/numSlices,
             opts: p.opts,
-            timezone: chart.timezone,
+            timezone: chart.timezone(),
             xOffset: i * (chart.width - SCROLLGUTTER)/numSlices,
-            yScale: chart.scale
+            yScale: chart.scale()
           });
           sliver.data = p.data;
           slices.push(sliver);
@@ -80,15 +80,15 @@ d3.chart('Zipline', {
     };
 
     scrollContainer.on('scroll', function() {
-      var scrollProp = chart.scrollDirection === 'horizontal' ? 'scrollLeft' : 'scrollHeight';
-      var newDate = chart.scale.invert(scrollContainer.property(scrollProp));
-      chart.location = {
+      var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollHeight';
+      var newDate = chart.scale().invert(scrollContainer.property(scrollProp));
+      chart.location({
         bounds: getBounds(newDate),
         center: moment(newDate).add(12, 'hours').toDate()
-      };
+      });
 
       _.each(slices, function(slice) {
-        var bounds = chart.location.bounds;
+        var bounds = chart.location().bounds;
         slice.draw(slice.data(bounds));
       });
     });
@@ -106,9 +106,9 @@ d3.chart('Zipline', {
       },
       events: {
         enter: function() {
-          var bounds = chart.location.bounds;
+          var bounds = chart.location().bounds;
           var numSlices = this.data().length;
-          var sliceFn = chart.scrollDirection === 'horizontal' ?
+          var sliceFn = chart.scrollDirection() === 'horizontal' ?
             makeHorizontalSliceFn(bounds, numSlices) :
               makeVerticalSliceFn(bounds, numSlices);
           this.attr({
@@ -120,23 +120,23 @@ d3.chart('Zipline', {
     });
   },
   location: function(location) {
-    if (!arguments.length) { return this.location; }
-    this.location = location;
+    if (!arguments.length) { return this._location; }
+    this._location = location;
     return this;
   },
   scale: function(scale) {
-    if (!arguments.length) { return this.scale; }
-    this.scale = scale;
+    if (!arguments.length) { return this._scale; }
+    this._scale = scale;
     return this;
   },
   scrollDirection: function(scrollDirection) {
-    if (!arguments.length) { return this.scrollDirection; }
-    this.scrollDirection = scrollDirection;
+    if (!arguments.length) { return this._scrollDirection; }
+    this._scrollDirection = scrollDirection;
     return this;
   },
   timezone: function(timezone) {
-    if (!arguments.length) { return this.timezone; }
-    this.timezone = timezone;
+    if (!arguments.length) { return this._timezone; }
+    this._timezone = timezone;
     return this;
   }
 });

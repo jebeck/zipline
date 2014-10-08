@@ -10,10 +10,6 @@ d3.chart('Background', {
 
     var fill;
 
-    var xPosition = function(d) {
-      return chart.xScale(d);
-    };
-
     this.layer('Background-rects', this.base.append('g').attr({
       'class': 'Background-rects'
     }), {
@@ -27,22 +23,26 @@ d3.chart('Background', {
         // });
       },
       insert: function() {
+        var h = chart.height();
         return this.append('rect')
           .attr({
-            height: chart.height,
+            height: h,
             'class': 'Background-rect'
           });
       },
       events: {
         merge: function() {
+          var xScale = chart.xScale(), yOffset = chart.yOffset();
+          var step = chart.step();
+          var opts = chart.opts(), timezone = chart.timezone();
           this.attr({
-            x: xPosition,
-            y: chart.yOffset,
+            x: function(d) { return xScale(d); },
+            y: yOffset,
             width: function(d) {
-              return chart.xScale(d3.time.hour.utc.offset(d, chart.step)) - chart.xScale(d);
+              return xScale(d3.time.hour.utc.offset(d, step)) - xScale(d);
             },
             fill: function(d) {
-              return chart.opts.fillScale(moment(d).tz(chart.timezone).hour());
+              return opts.fillScale(moment(d).tz(timezone).hour());
             }
           });
         },
@@ -65,21 +65,23 @@ d3.chart('Background', {
         // });
       },
       insert: function() {
+        var yOffset = chart.yOffset();
         return this.append('text')
           .attr({
-            y: chart.yOffset + 25,
+            y: yOffset + 25,
             'class': 'Background-label'
           });
       },
       events: {
         merge: function() {
+          var xScale = chart.xScale(), timezone = chart.timezone();
           this.attr({
             x: function(d) {
-              return xPosition(d) + 10;
+              return xScale(d) + 10;
             }
           })
           .text(function(d) {
-            return moment(d).tz(chart.timezone).format('MMM Do h:mm a');
+            return moment(d).tz(timezone).format('MMM Do h:mm a');
           });
         },
         exit: function() {
@@ -89,34 +91,35 @@ d3.chart('Background', {
     });
   },
   height: function(height) {
-    if (!arguments.length) { return this.height; }
-    this.height = height;
+    if (!arguments.length) { return this._height; }
+    this._height = height;
     return this;
   },
   opts: function(opts) {
-    if (!arguments.length) { return this.opts; }
-    this.opts = opts;
+    if (!arguments.length) { return this._opts; }
+    this._opts = opts;
     return this;
   },
   xScale: function(xScale) {
-    if (!arguments.length) { return this.xScale; }
-    this.xScale = xScale;
+    if (!arguments.length) { return this._xScale; }
+    this._xScale = xScale;
     return this;
   },
   step: function(step) {
-    if (!arguments.length) { return this.step; }
-    this.step = step;
+    if (!arguments.length) { return this._step; }
+    this._step = step;
     return this;
   },
   timezone: function(timezone) {
-    if (!arguments.length) { return this.timezone; }
-    this.timezone = timezone;
+    if (!arguments.length) { return this._timezone; }
+    this._timezone = timezone;
     return this;
   },
   transform: function(data) {
+    var timezone = chart.timezone(), step = chart.step();
     return _.filter(data, function(d) {
-      var hour = moment(d).tz(chart.timezone).hour();
-      if (hour % chart.step === 0) {
+      var hour = moment(d).tz(timezone).hour();
+      if (hour % step === 0) {
         return true;
       }
       else {
@@ -125,8 +128,8 @@ d3.chart('Background', {
     });
   },
   yOffset: function(yOffset) {
-    if (!arguments.length) { return this.yOffset; }
-    this.yOffset = yOffset;
+    if (!arguments.length) { return this._yOffset; }
+    this._yOffset = yOffset;
     return this;
   }
 });
