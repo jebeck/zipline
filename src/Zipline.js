@@ -24,8 +24,8 @@ d3.chart('Zipline', {
 
     var getBounds = function(dt) {
       return [
-        moment(dt).toDate(),
-        moment(dt).add(1, 'days').toDate()
+        dt,
+        d3.time.day.utc.offset(dt, 1)
       ];
     };
 
@@ -84,7 +84,7 @@ d3.chart('Zipline', {
       var newDate = chart.scale().invert(scrollContainer.property(scrollProp));
       chart.location({
         bounds: getBounds(newDate),
-        center: moment(newDate).add(12, 'hours').toDate()
+        center: d3.time.hour.utc.offset(newDate, 12)
       });
 
       _.each(slices, function(slice) {
