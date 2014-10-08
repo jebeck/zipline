@@ -11,10 +11,6 @@ d3.chart('CBG', {
   initialize: function() {
     var chart = this;
 
-    var xPosition = function(d) {
-      return chart.xScale(moment(d.trueUtcTime).utc().toDate());
-    };
-
     this.layer('CBG-circles', this.base.append('g').attr({
       'class': 'CBG-circles'
     }), {
@@ -24,19 +20,24 @@ d3.chart('CBG', {
         }));
       },
       insert: function() {
+        var opts = chart.opts();
         return this.append('circle')
           .attr({
-            r: chart.opts.r,
-            fill: chart.opts.fill,
+            r: opts.r,
+            fill: opts.fill,
             'class': 'CBG-circle'
           });
       },
       events: {
         merge: function() {
+          var xScale = chart.xScale();
+          var yScale = chart.yScale();
           this.attr({
-            cx: xPosition,
+            cx: function(d) {
+              return xScale(moment(d.trueUtcTime).utc().toDate());
+            },
             cy: function(d) {
-              return chart.yScale(d.value) + chart.yOffset;
+              return yScale(d.value) + chart.yOffset();
             }
           });
         },
@@ -47,24 +48,29 @@ d3.chart('CBG', {
     });
   },
   height: function(height) {
-    if (!arguments.length) { return this.height; }
-    this.height = height;
-    this.yScale = scales.bg(height, this.opts.r/2);
+    if (!arguments.length) { return this._height; }
+    this._height = height;
+    this.yScale(height);
     return this;
   },
   opts: function(opts) {
-    if (!arguments.length) { return this.opts; }
-    this.opts = opts;
+    if (!arguments.length) { return this._opts; }
+    this._opts = opts;
     return this;
   },
   xScale: function(xScale) {
-    if (!arguments.length) { return this.xScale; }
-    this.xScale = xScale;
+    if (!arguments.length) { return this._xScale; }
+    this._xScale = xScale;
+    return this;
+  },
+  yScale: function(height) {
+    if (!arguments.length) { return this._yScale; }
+    this._yScale = scales.bg(height, this.opts().r/2);
     return this;
   },
   yOffset: function(yOffset) {
-    if (!arguments.length) { return this.yOffset; }
-    this.yOffset = yOffset;
+    if (!arguments.length) { return this._yOffset; }
+    this._yOffset = yOffset;
     return this;
   }
 });
