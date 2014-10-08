@@ -3,7 +3,6 @@ var React = require('react');
 
 var crossfilter = require('crossfilter');
 var d3 = require('d3');
-var moment = require('moment-timezone');
 
 var zipline = require('../src/');
 var Chart = zipline.Zipline;
@@ -61,9 +60,9 @@ var App = React.createClass({
       chart: Background,
       data: function(bounds) {
         return d3.time.hour.utc.range(
-          moment(bounds[0]).utc().subtract(1, 'days').toDate(),
-          moment(bounds[1]).utc().add(1, 'days').toDate(),
-          1);
+            d3.time.day.utc.offset(bounds[0], -1),
+            d3.time.day.utc.offset(bounds[1], 1)
+          );
       },
       id: 'Background/top',
       opts: {
@@ -74,8 +73,8 @@ var App = React.createClass({
         data: function(bounds) {
           dataByType.filter('cbg');
           return dataByDatetime.filter([
-            moment(bounds[0]).utc().subtract(1, 'days').toISOString(),
-            moment(bounds[1]).utc().add(1, 'days').toISOString()
+            d3.time.day.utc.offset(bounds[0], -1).toISOString(),
+            d3.time.day.utc.offset(bounds[1], 1).toISOString()
           ]).top(Infinity);
         },
         id: 'CBG/top',
@@ -88,9 +87,9 @@ var App = React.createClass({
       chart: Background,
       data: function(bounds) {
         return d3.time.hour.utc.range(
-          moment(bounds[0]).utc().subtract(1, 'days').toDate(),
-          moment(bounds[1]).utc().add(1, 'days').toDate(),
-          1);
+            d3.time.day.utc.offset(bounds[0], -1),
+            d3.time.day.utc.offset(bounds[1], 1)
+          );
       },
       id: 'Background/bottom',
       opts: {
@@ -101,8 +100,8 @@ var App = React.createClass({
         data: function(bounds) {
           dataByType.filter('cbg');
           return dataByDatetime.filter([
-            moment(bounds[0]).utc().subtract(1, 'days').toISOString(),
-            moment(bounds[1]).utc().add(1, 'days').toISOString()
+            d3.time.day.utc.offset(bounds[0], -1).toISOString(),
+            d3.time.day.utc.offset(bounds[1], 1).toISOString()
           ]).top(Infinity);
         },
         id: 'CBG/bottom',

@@ -1,7 +1,5 @@
 var d3 = window.d3;
 
-var moment = require('moment');
-
 var zipline = require('../../src/');
 var reuse = zipline.util.reuse;
 
@@ -34,7 +32,7 @@ d3.chart('CBG', {
           var yScale = chart.yScale();
           this.attr({
             cx: function(d) {
-              return xScale(moment(d.trueUtcTime).utc().toDate());
+              return xScale(new Date(d.trueUtcTime));
             },
             cy: function(d) {
               return yScale(d.value) + chart.yOffset();
