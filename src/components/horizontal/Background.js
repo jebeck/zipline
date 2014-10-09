@@ -100,9 +100,9 @@ d3.chart('Background', {
     this._opts = opts;
     return this;
   },
-  xScale: function(xScale) {
-    if (!arguments.length) { return this._xScale; }
-    this._xScale = xScale;
+  remove: function() {
+    this.base.remove();
+
     return this;
   },
   step: function(step) {
@@ -116,7 +116,7 @@ d3.chart('Background', {
     return this;
   },
   transform: function(data) {
-    var timezone = chart.timezone(), step = chart.step();
+    var timezone = this.timezone(), step = this.step();
     return _.filter(data, function(d) {
       var hour = moment(d).tz(timezone).hour();
       if (hour % step === 0) {
@@ -127,6 +127,11 @@ d3.chart('Background', {
       }
     });
   },
+  xScale: function(xScale) {
+    if (!arguments.length) { return this._xScale; }
+    this._xScale = xScale;
+    return this;
+  },
   yOffset: function(yOffset) {
     if (!arguments.length) { return this._yOffset; }
     this._yOffset = yOffset;
@@ -134,25 +139,35 @@ d3.chart('Background', {
   }
 });
 
-var chart;
+module.exports = function() {
+  var chart;
 
-module.exports = {
-  create: function(el, opts) {
-    opts = opts || {};
-    var defaults = {
-      step: 3,
-      yOffset: 0
-    };
-    _.defaults(opts, defaults);
+  return {
+    create: function(el, opts) {
+      opts = opts || {};
+      var defaults = {
+        step: 3,
+        yOffset: 0
+      };
+      _.defaults(opts, defaults);
 
-    chart = d3.select(el).chart('Background')
-      .height(opts.height)
-      .opts(opts.opts)
-      .xScale(opts.xScale)
-      .step(opts.step)
-      .timezone(opts.timezone)
-      .yOffset(opts.yOffset);
+      chart = d3.select(el).chart('Background')
+        .height(opts.height)
+        .opts(opts.opts)
+        .xScale(opts.xScale)
+        .step(opts.step)
+        .timezone(opts.timezone)
+        .yOffset(opts.yOffset);
 
-    return chart;
-  }
+      return this;
+    },
+    render: function(data) {
+      chart.draw(data);
+    },
+    destroy: function() {
+      chart.remove();
+
+      return this;
+    }
+  };
 };
