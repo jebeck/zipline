@@ -56,6 +56,10 @@ d3.chart('CBG', {
     this._opts = opts;
     return this;
   },
+  remove: function() {
+    this.base.remove();
+    return this;
+  },
   xScale: function(xScale) {
     if (!arguments.length) { return this._xScale; }
     this._xScale = xScale;
@@ -73,20 +77,32 @@ d3.chart('CBG', {
   }
 });
 
-var chart;
+module.exports = function() {
+  var chart;
 
-module.exports = {
-  create: function(el, opts) {
-    opts = opts || {};
-    var defaults = {};
-    _.defaults(opts, defaults);
+  return {
+    create: function(el, opts) {
+      opts = opts || {};
+      var defaults = {};
+      _.defaults(opts, defaults);
 
-    chart = d3.select(el).chart('CBG')
-      .opts(opts.opts)
-      .height(opts.height)
-      .xScale(opts.xScale)
-      .yOffset(opts.yOffset);
+      chart = d3.select(el).chart('CBG')
+        .opts(opts.opts)
+        .height(opts.height)
+        .xScale(opts.xScale)
+        .yOffset(opts.yOffset);
 
-    return chart;
-  }
+      return this;
+    },
+    render: function(data) {
+      chart.draw(data);
+
+      return this;
+    },
+    destroy: function() {
+      chart.remove();
+
+      return this;
+    }
+  };
 };
