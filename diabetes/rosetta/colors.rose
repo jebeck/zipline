@@ -1,4 +1,4 @@
 bg:
     $low = #8D0100
-    $target = #720741
-    $high = #DA7905
+    $target = #FFFFFF
+    $high = #720741

@@ -22,7 +22,6 @@ d3.chart('CBG', {
         return this.append('circle')
           .attr({
             r: opts.r,
-            fill: opts.fill,
             'class': 'CBG-circle'
           });
       },
@@ -30,12 +29,16 @@ d3.chart('CBG', {
         merge: function() {
           var xScale = chart.xScale();
           var yScale = chart.yScale();
+          var fillScale = chart.bgFillScale();
           this.attr({
             cx: function(d) {
               return xScale(new Date(d.trueUtcTime));
             },
             cy: function(d) {
-              return yScale(d.value) + chart.yOffset();
+              return yScale(d.value);
+            },
+            fill: function(d) {
+              return fillScale(d.value);
             }
           });
         },
@@ -44,6 +47,11 @@ d3.chart('CBG', {
         }
       }
     });
+  },
+  bgFillScale: function(bgCategories) {
+    if (!arguments.length) { return this._bgFillScale; }
+    this._bgFillScale = scales.bgFill(bgCategories);
+    return this;
   },
   height: function(height) {
     if (!arguments.length) { return this._height; }
@@ -54,10 +62,16 @@ d3.chart('CBG', {
   opts: function(opts) {
     if (!arguments.length) { return this._opts; }
     this._opts = opts;
+    this.bgFillScale(opts.bgCategories);
     return this;
   },
   remove: function() {
     this.base.remove();
+    return this;
+  },
+  width: function(width) {
+    if (!arguments.length) { return this._width; }
+    this._width = width;
     return this;
   },
   xScale: function(xScale) {
@@ -67,12 +81,7 @@ d3.chart('CBG', {
   },
   yScale: function(height) {
     if (!arguments.length) { return this._yScale; }
-    this._yScale = scales.bg(height, this.opts().r/2);
-    return this;
-  },
-  yOffset: function(yOffset) {
-    if (!arguments.length) { return this._yOffset; }
-    this._yOffset = yOffset;
+    this._yScale = scales.bg(height, this.opts().r*2);
     return this;
   }
 });
@@ -83,14 +92,19 @@ module.exports = function() {
   return {
     create: function(el, opts) {
       opts = opts || {};
-      var defaults = {};
+      var defaults = {
+        bgCategories: {
+          low: 80,
+          high: 180
+        }
+      };
       _.defaults(opts, defaults);
 
-      chart = d3.select(el).chart('CBG')
+      chart = el.chart('CBG')
         .opts(opts.opts)
         .height(opts.height)
-        .xScale(opts.xScale)
-        .yOffset(opts.yOffset);
+        .width(opts.width)
+        .xScale(opts.majorScale);
 
       return this;
     },

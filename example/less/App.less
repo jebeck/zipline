@@ -1,5 +1,13 @@
 @import 'fonts.less';
 
+@full-width: 100vw;
+@full-height: 100vh;
+
+@almost-width: 96vw;
+@almost-height: 96vh;
+@chrome-height: 8vh;
+@chart-height: @almost-height - @chrome-height;
+
 body {
   margin: 0;
   width: 100%;
@@ -7,18 +15,40 @@ body {
   overflow: hidden;
 
   .App {
-    width: 100vw;
-    height: 100vh;
+    width: @full-width;
+    height: @full-height;
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
 
-    .App-chart {
-      width: 96vw;
-      height: 96vh;
+    .App-chrome {
+      background-color: grey;
+      width: @full-width;
+      height: @chrome-height;
 
       margin: 0 auto;
+    }
+
+    .App-loadingMessage {
+      font-style: italic;
+      font-size: 1.25em;
+    }
+
+    .App-chart {
+      width: @almost-width;
+      height: @chart-height;
+
+      margin: 0 auto;
+      padding: 2vh 0;
+    }
+
+    .App-loadingMessage {
+      height: @chart-height/1.5;
+      p {
+        color: white;
+      }
     }
   }  
 }

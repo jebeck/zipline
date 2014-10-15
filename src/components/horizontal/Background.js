@@ -8,8 +8,6 @@ d3.chart('Background', {
   initialize: function() {
     var chart = this;
 
-    var fill;
-
     this.layer('Background-rects', this.base.append('g').attr({
       'class': 'Background-rects'
     }), {
@@ -32,56 +30,18 @@ d3.chart('Background', {
       },
       events: {
         merge: function() {
-          var xScale = chart.xScale(), yOffset = chart.yOffset();
+          var xScale = chart.xScale();
           var step = chart.step();
           var opts = chart.opts(), timezone = chart.timezone();
           this.attr({
             x: function(d) { return xScale(d); },
-            y: yOffset,
+            y: 0,
             width: function(d) {
               return xScale(d3.time.hour.utc.offset(d, step)) - xScale(d);
             },
             fill: function(d) {
               return opts.fillScale(moment(d).tz(timezone).hour());
             }
-          });
-        },
-        exit: function() {
-          this.remove();
-        }
-      }
-    });
-
-    this.layer('Background-labels', this.base.append('g').attr({
-      'class': 'Background-labels'
-    }), {
-      dataBind: function(data) {
-        return reuse(this.selectAll('text').data(data, function(d) {
-          return d;
-        }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('rect').data(data, function(d) {
-        //   return d;
-        // });
-      },
-      insert: function() {
-        var yOffset = chart.yOffset();
-        return this.append('text')
-          .attr({
-            y: yOffset + 25,
-            'class': 'Background-label'
-          });
-      },
-      events: {
-        merge: function() {
-          var xScale = chart.xScale(), timezone = chart.timezone();
-          this.attr({
-            x: function(d) {
-              return xScale(d) + 10;
-            }
-          })
-          .text(function(d) {
-            return moment(d).tz(timezone).format('MMM Do h:mm a');
           });
         },
         exit: function() {
@@ -132,9 +92,9 @@ d3.chart('Background', {
     this._xScale = xScale;
     return this;
   },
-  yOffset: function(yOffset) {
-    if (!arguments.length) { return this._yOffset; }
-    this._yOffset = yOffset;
+  width: function(width) {
+    if (!arguments.length) { return this._width; }
+    this._width = width;
     return this;
   }
 });
@@ -146,28 +106,30 @@ module.exports = function() {
     create: function(el, opts) {
       opts = opts || {};
       var defaults = {
-        step: 3,
-        yOffset: 0
+        extension: 'Background',
+        step: 3
       };
       _.defaults(opts, defaults);
 
-      chart = d3.select(el).chart('Background')
+      chart = el.chart(opts.extension)
         .height(opts.height)
         .opts(opts.opts)
-        .xScale(opts.xScale)
         .step(opts.step)
         .timezone(opts.timezone)
-        .yOffset(opts.yOffset);
+        .width(opts.width)
+        .xScale(opts.majorScale);
 
       return this;
     },
     render: function(data) {
       chart.draw(data);
+
+      return this;
     },
     destroy: function() {
       chart.remove();
 
       return this;
-    }
+    } 
   };
 };

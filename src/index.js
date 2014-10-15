@@ -6,9 +6,20 @@ require('./less/Zip.less');
 var zipline = {
   components: {
     horizontal: {
-      Background: require('./components/horizontal/Background')
+      Background: require('./components/horizontal/Background'),
+      Label: require('./components/horizontal/Label'),
+      TimeLabels: require('./components/horizontal/TimeLabels')
+    },
+    page: {
+      Dashboard: require('./components/page/Dashboard'),
+      Details: require('./components/page/Details'),
+      Picker: require('./components/page/Picker'),
+      Timeline: require('./components/page/Timeline')
     },
     vertical: {}
+  },
+  dataservices: {
+    BasicFilter: require('./dataservices/BasicFilter')
   },
   util: {
     colors: require('./util/colors'),
@@ -16,7 +27,8 @@ var zipline = {
     reuse: require('./util/reusenodes'),
     scales: require('./util/scales')
   },
-  Zipline: require('./Zipline')
+  Zipline: require('./Zipline'),
+  Zippage: require('./Zippage')
 };
 
 module.exports = zipline;
