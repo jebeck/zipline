@@ -13,9 +13,9 @@ module.exports = {
   },
   bgFill: function(bgCategories) {
     var categoryColors = {
-      low: convert(colors.bg.low),
-      target: convert(colors.bg.target),
-      high: convert(colors.bg.high)
+      low: convert(colors.bg.low.basic),
+      target: convert(colors.bg.target.basic),
+      high: convert(colors.bg.high.basic)
     };
     return d3.scale.threshold()
       .domain([bgCategories.low, bgCategories.high])

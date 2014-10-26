@@ -17,10 +17,28 @@ var convert = zipline.util.rgbtohex;
 var intervalColors = {
   start: convert(colors.interval.start),
   end: convert(colors.interval.end)
-};
+}; 
 
 var diabetes = require('../diabetes/');
+var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBG;
+
+var bgColors = diabetes.util.colors.bg;
+var bgIntervalColors = {
+  low: {
+    start: convert(bgColors.low.basic),
+    end: convert(bgColors.low.lighter)
+  },
+  target: {
+    start: convert(bgColors.target.basic),
+    end: convert(bgColors.target.lighter)
+  },
+  high: {
+    start: convert(bgColors.high.basic),
+    end: convert(bgColors.high.lighter)
+  }
+};
+var bgSize = 3;
 
 var oneHourIntervals = function(bounds) {
   return d3.time.hour.utc.range(
@@ -59,19 +77,19 @@ module.exports = function(data) {
       data: oneHourIntervals,
       label: {
         component: Label,
-        text: 'Activity Data'
+        text: 'Activity'
       },
       opts: {
         fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
       },
       weight: 2
     }, {
-      id: 'Diabetes',
-      chart: Background,
+      id: 'BG',
+      chart: BGBackground,
       data: oneHourIntervals,
       label: {
         component: Label,
-        text: 'Diabetes Data'
+        text: 'Blood Glucose'
       },
       plot: [{
         chart: CBG,
@@ -84,11 +102,17 @@ module.exports = function(data) {
         id: 'CBG',
         opts: {
           bgCategories: bgCategories,
-          r: 3
+          r: bgSize
         }
       }],
       opts: {
-        fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
+        bgCategories: bgCategories,
+        fillScales: {
+          low: scales.hourcolorscale(bgIntervalColors.low.start, bgIntervalColors.low.end),
+          target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
+          high: scales.hourcolorscale(bgIntervalColors.high.start, bgIntervalColors.high.end)
+        },
+        r: bgSize
       },
       weight: 3
     }]

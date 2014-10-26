@@ -22,7 +22,7 @@ module.exports = {
   },
   hourcolorscale: function(c1, c2) {
     return d3.scale.linear()
-      .domain([0, 23])
+      .domain([12, 0])
       .range([c1, c2])
       .interpolate(d3.interpolateHcl);
   }
