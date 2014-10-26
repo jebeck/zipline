@@ -21,6 +21,7 @@ d3.chart('CBG', {
         var opts = chart.opts();
         return this.append('circle')
           .attr({
+            fill: 'white',
             r: opts.r,
             'class': 'CBG-circle'
           });
@@ -29,16 +30,12 @@ d3.chart('CBG', {
         merge: function() {
           var xScale = chart.xScale();
           var yScale = chart.yScale();
-          var fillScale = chart.bgFillScale();
           this.attr({
             cx: function(d) {
               return xScale(new Date(d.trueUtcTime));
             },
             cy: function(d) {
               return yScale(d.value);
-            },
-            fill: function(d) {
-              return fillScale(d.value);
             }
           });
         },

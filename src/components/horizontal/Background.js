@@ -40,7 +40,7 @@ d3.chart('Background', {
               return xScale(d3.time.hour.utc.offset(d, step)) - xScale(d);
             },
             fill: function(d) {
-              return opts.fillScale(moment(d).tz(timezone).hour());
+              return opts.fillScale(Math.abs(12 - moment(d).tz(timezone).hour()));
             }
           });
         },
