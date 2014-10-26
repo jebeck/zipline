@@ -14,7 +14,6 @@ var Zippage = React.createClass({
   getDefaultProps: function() {
     return {
       dateFormat: 'dddd, MMMM Do',
-      datetimeLocation: d3.time.year.floor(new Date()).toISOString(),
       details: true,
       dashboard: true,
       monthFormat: 'MMMM YYYY',
@@ -22,16 +21,25 @@ var Zippage = React.createClass({
       timezone: 'US/Pacific'
     };
   },
+  getInitialState: function() {
+    return {
+      datetimeLocation: null
+    };
+  },
   propTypes: {
     data: React.PropTypes.array.isRequired,
     dateFormat: React.PropTypes.string.isRequired,
-    datetimeLocation: React.PropTypes.string.isRequired,
     details: React.PropTypes.bool.isRequired,
     dashboard: React.PropTypes.bool.isRequired,
     monthFormat: React.PropTypes.string.isRequired,
     picker: React.PropTypes.bool.isRequired,
     timezone: React.PropTypes.string.isRequired,
     zipConfig: React.PropTypes.object.isRequired
+  },
+  handleNavigation: function(datetimeStr) {
+    this.setState({
+      datetimeLocation: datetimeStr
+    });
   },
   render: function() {
     var details = this.props.details ? this.renderDetails() : null;
@@ -107,7 +115,8 @@ var Zippage = React.createClass({
         dashboard={this.props.dashboard}
         details={this.props.details}
         timezone={this.props.timezone}
-        zipConfig={this.props.zipConfig} />
+        zipConfig={this.props.zipConfig}
+        onNavigation={this.handleNavigation} />
     );
     /* jshint ignore:end */
   },

@@ -10,14 +10,22 @@ var Timeline = React.createClass({
     details: React.PropTypes.bool.isRequired,
     dashboard: React.PropTypes.bool.isRequired,
     timezone: React.PropTypes.string.isRequired,
-    zipConfig: React.PropTypes.object.isRequired
+    zipConfig: React.PropTypes.object.isRequired,
+    onNavigation: React.PropTypes.func.isRequired
   },
   componentDidMount: function() {
-    var zipline = Zipline.create(this.refs.zipline.getDOMNode(), this.props.timezone, {});
-    this.setState({
-      zipline: zipline
+    var zipNode = this.refs.zipline.getDOMNode();
+    var opts = {};
+    var zipline = Zipline().create(zipNode, this.props.timezone, opts);
+    var zipConfig = this.props.zipConfig;
+    zipline.render(zipConfig.slices);
+    d3.select(window).on('resize', function() {
+      zipline.clear();
+      var dims = zipline.getDimensions(zipNode, opts.scroll === 'horizontal', opts.timespan);
+      zipline.resize(dims).render(zipConfig.slices).relocate();
     });
-    zipline.render(this.props.zipConfig.slices);
+    this.chart = zipline;
+    this.bindEvents();
   },
   render: function() {
     var timelineClass = cx({
@@ -54,6 +62,9 @@ var Timeline = React.createClass({
       /* jshint ignore:end */
     }
     return components;
+  },
+  bindEvents: function() {
+    this.chart.emitter.on('navigatedToCenter', this.props.onNavigation);
   }
 });
 
