@@ -7,8 +7,6 @@ var scales = require('./util/scales');
 
 d3.chart('Zipline', {
   initialize: function() {
-    this.emitter = new EventEmitter();
-
     var chart = this;
 
     var makeSliceFn = function(bounds) {
@@ -88,6 +86,11 @@ d3.chart('Zipline', {
       }
     });
   },
+  clear: function() {
+    this.base.selectAll('svg').remove();
+
+    return this;
+  },
   height: function(height) {
     if (!arguments.length) { return this._height; }
     this._height = height;
@@ -120,94 +123,115 @@ d3.chart('Zipline', {
   }
 });
 
-var chart;
+module.exports = function() {
+  var chart, emitter = new EventEmitter();
 
-module.exports = {
-  create: function(el, timezone, opts) {
-    opts = opts || {};
-    var now = moment().utc();
-    var defaults = {
-      scroll: 'horizontal',
-      timespan: {
-        initial: [
-          moment(now).tz(timezone).startOf('year').toDate(),
-          moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
-        ],
-        total: [
-          moment(now).tz(timezone).startOf('year').toDate(),
-          moment(now).tz(timezone).endOf('year').toDate()
-        ]
-      },
-      location: {
-        bounds: [
-          moment(now).tz(timezone).startOf('year').toDate(),
-          moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
-        ]
-      },
-      timezone: timezone,
-      yOffset: 0
-    };
-    _.defaults(opts, defaults);
+  return {
+    clear: function() {
+      chart.clear();
 
-    var horizontal = opts.scroll === 'horizontal';
+      return this;
+    },
+    create: function(el, timezone, opts) {
+      opts = opts || {};
+      var now = moment().utc();
+      var defaults = {
+        scroll: 'horizontal',
+        timespan: {
+          initial: [
+            moment(now).tz(timezone).startOf('year').toDate(),
+            moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
+          ],
+          total: [
+            moment(now).tz(timezone).startOf('year').toDate(),
+            moment(now).tz(timezone).endOf('year').toDate()
+          ]
+        },
+        location: {
+          bounds: [
+            moment(now).tz(timezone).startOf('year').toDate(),
+            moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
+          ]
+        },
+        timezone: timezone,
+        yOffset: 0
+      };
+      _.defaults(opts, defaults);
 
-    function getFromDimensions(el) {
-      var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, opts.timespan.initial);
-      var scaleExtent = Math.abs(scale(opts.timespan.total[0]) - scale(opts.timespan.total[1]));
+      var horizontal = opts.scroll === 'horizontal';
+
+      var dims = this.getDimensions(el, horizontal, opts.timespan);
+
+      chart = d3.select(el)
+        .chart('Zipline')
+        .height(dims.height)
+        .location(opts.location)
+        .scale(dims.scale)
+        .scrollDirection(opts.scroll)
+        .timezone(opts.timezone)
+        .width(dims.width);
+
+      var scrolls = d3.select('.Zipline');
+      scrolls.classed({
+        'Zipline--horizontalScroll': horizontal,
+        'Zipline--verticalScroll': !horizontal
+      });
+      this.relocate(opts.location.bounds);
+
+      scrolls.on('scroll', function() {
+        var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollHeight';
+        var newDate = chart.scale().invert(scrolls.property(scrollProp));
+        chart.location({
+          bounds: [newDate, d3.time.day.utc.offset(newDate, 1)],
+          center: d3.time.hour.utc.offset(newDate, 12)
+        });
+        emitter.emit('navigatedToCenter', chart.location().center.toISOString());
+
+        _.each(chart.slices, function(slice) {
+          var bounds = chart.location().bounds;
+          slice.render(slice.data(bounds));
+        });
+      });
+
+      return this;
+    },
+    emitter: emitter,
+    getDimensions: function(el, horizontal, timespan) {
+      var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, timespan.initial);
+      var scaleExtent = Math.abs(scale(timespan.total[0]) - scale(timespan.total[1]));
 
       var width = horizontal ? scaleExtent : el.offsetWidth;
       var height = horizontal ? el.offsetHeight : scaleExtent;
       return {width: width, height: height, scale: scale};
-    }
+    },
+    relocate: function(bounds) {
+      bounds = bounds || chart.location().bounds;
+      var scrolls = d3.select('.Zipline'), scale = chart.scale();
+      if (chart.scrollDirection() === 'horizontal') {
+        scrolls.property('scrollLeft', scale(bounds[0]));
+      }
+      else {
+        scrolls.property('scrollHeight', scale(bounds[0]));
+      }
+    },
+    render: function(data) {
+      var bounds = chart.location().bounds;
 
-    var dims = getFromDimensions(el);
+      chart.draw(data);
 
-    chart = d3.select(el)
-      .chart('Zipline')
-      .height(dims.height)
-      .location(opts.location)
-      .scale(dims.scale)
-      .scrollDirection(opts.scroll)
-      .timezone(opts.timezone)
-      .width(dims.width);
-
-    var scrolls = d3.select('.Zipline');
-    scrolls.classed({
-      'Zipline--horizontalScroll': horizontal,
-      'Zipline--verticalScroll': !horizontal
-    });
-    if (horizontal) {
-      scrolls.property('scrollLeft', dims.scale(opts.location.bounds[0]));
-    }
-    else {
-      scrolls.property('scrollHeight', dims.scale(opts.location.bounds[0]));
-    }
-
-    scrolls.on('scroll', function() {
-      var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollHeight';
-      var newDate = chart.scale().invert(scrolls.property(scrollProp));
-      chart.location({
-        bounds: [newDate, d3.time.day.utc.offset(newDate, 1)],
-        center: d3.time.hour.utc.offset(newDate, 12)
-      });
-
+      // initial draw
       _.each(chart.slices, function(slice) {
-        var bounds = chart.location().bounds;
         slice.render(slice.data(bounds));
       });
-    });
 
-    return this;
-  },
-  render: function(data) {
-    chart.draw(data);
+      return this;
+    },
+    resize: function(dims) {
+      chart.height(dims.height)
+        .scale(dims.scale)
+        .width(dims.width);
 
-    // initial draw
-    _.each(chart.slices, function(slice) {
-      var bounds = chart.location().bounds;
-      slice.render(slice.data(bounds));
-    });
-
-    return this;
-  }
+      return this;
+    }
+  };
 };

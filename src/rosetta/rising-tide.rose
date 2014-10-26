@@ -1,6 +1,6 @@
 $background = #0F1340
 
-$label = #FFFFFF
+$label = #A4A4A4
 
 interval:
     $start = #004973

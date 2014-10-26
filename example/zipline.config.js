@@ -55,12 +55,6 @@ var bgCategories = {
 module.exports = function(data) {
   var dataService = new BasicFilter(data);
   return {
-    initialTimespan: function(datetime, timezone) {
-      return [
-        moment(datetime).tz(timezone).toDate(),
-        moment(datetime).tz(timezone).add(1, 'days').toDate()
-      ];
-    },
     slices: [{
       id: 'TimeLabels',
       chart: Background,
