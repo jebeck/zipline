@@ -2,9 +2,7 @@ var _ = require('lodash');
 var d3 = window.d3;
 var moment = require('moment-timezone');
 
-var reuse = require('../../util/reusenodes');
-
-d3.chart('Background', {
+d3.chart('StackedDayBackground', {
   initialize: function() {
     var chart = this;
 
@@ -12,40 +10,40 @@ d3.chart('Background', {
       'class': 'Background-rects'
     }), {
       dataBind: function(data) {
-        return reuse(this.selectAll('rect').data(data, function(d) {
-          return d;
-        }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('rect').data(data, function(d) {
-        //   return d;
-        // });
+        var dayStr = moment(chart.xScale().domain()[0]).tz(chart.timezone()).format('dddd');
+        var dayClass = 'Background-rects--' + dayStr.toLowerCase();
+        return this.attr({
+            id: chart.id()
+          })
+          .classed(dayClass, true)
+          .selectAll('rect')
+          .data(data, function(d) { return d.start; });
       },
       insert: function() {
-        var h = chart.height();
+        var gutter = chart.opts().gutter;
+        var domain = chart.xScale().domain(), yScale = chart.yScale();
         return this.append('rect')
           .attr({
-            height: h,
-            y: 0,
+            height: function(d) {
+              return yScale(domain[1]) - yScale(domain[0]) - gutter*2;
+            },
+            y: gutter,
             'class': 'Background-rect'
           });
       },
       events: {
-        merge: function() {
-          var xScale = chart.xScale();
-          var step = chart.step();
+        enter: function() {
           var opts = chart.opts(), timezone = chart.timezone();
+          var xScale = chart.xScale();
           this.attr({
             fill: function(d) {
-              return opts.fillScale(Math.abs(12 - moment(d).tz(timezone).hour()));
+              return opts.fillScale(Math.abs(12 - moment(d.start).tz(timezone).hour()));
             },
             width: function(d) {
-              return xScale(d3.time.hour.utc.offset(d, step)) - xScale(d);
+              return xScale(d.end) - xScale(d.start);
             },
-            x: function(d) { return xScale(d); }
+            x: function(d) { return xScale(d.start); }
           });
-        },
-        exit: function() {
-          this.remove();
         }
       }
     });
@@ -55,9 +53,19 @@ d3.chart('Background', {
     this._height = height;
     return this;
   },
+  id: function(id) {
+    if (!arguments.length) { return this._id; }
+    this._id = id;
+    return this;
+  },
   opts: function(opts) {
     if (!arguments.length) { return this._opts; }
     this._opts = opts;
+    return this;
+  },
+  remove: function() {
+    this.base.remove();
+
     return this;
   },
   step: function(step) {
@@ -72,15 +80,25 @@ d3.chart('Background', {
   },
   transform: function(data) {
     var timezone = this.timezone(), step = this.step();
-    return _.filter(data, function(d) {
+    var dates = [];
+    var firstDay = moment(data[0]).tz(timezone).date();
+    _.each(data, function(d, i, data) {
       var hour = moment(d).tz(timezone).hour();
-      if (hour % step === 0) {
-        return true;
-      }
-      else {
-        return false;
+      var day = moment(d).tz(timezone).date();
+      if (hour % step === 0 && day === firstDay) {
+        dates.push({ start: d });
       }
     });
+    _.map(dates, function(d, i, data) {
+      if (i !== data.length - 1) {
+        d.end = new Date(d.start.valueOf() + (data[i + 1].start - d.start));
+      }
+      else {
+        d.end = new Date(d.start.valueOf() +
+          (moment(d.start).tz(this.timezone()).startOf('day').add(1, 'days').valueOf() - d.start));
+      }
+    }, this);
+    return dates;
   },
   width: function(width) {
     if (!arguments.length) { return this._width; }
@@ -90,6 +108,11 @@ d3.chart('Background', {
   xScale: function(xScale) {
     if (!arguments.length) { return this._xScale; }
     this._xScale = xScale;
+    return this;
+  },
+  yScale: function(yScale) {
+    if (!arguments.length) { return this._yScale; }
+    this._yScale = yScale;
     return this;
   }
 });
@@ -101,23 +124,29 @@ module.exports = function() {
     create: function(el, opts) {
       opts = opts || {};
       var defaults = {
-        extension: 'Background',
         step: 3
       };
       _.defaults(opts, defaults);
 
-      chart = el.chart(opts.extension)
+      chart = el.chart('StackedDayBackground')
         .height(opts.height)
+        .id(opts.id)
         .opts(opts.opts)
         .step(opts.step)
         .timezone(opts.timezone)
         .width(opts.width)
-        .xScale(opts.majorScale);
+        .xScale(opts.xScale)
+        .yScale(opts.yScale);
 
       return this;
     },
     render: function(data) {
       chart.draw(data);
+
+      return this;
+    },
+    destroy: function() {
+      chart.remove();
 
       return this;
     }

@@ -1,7 +1,7 @@
 require('script!d3/d3.min.js');
 require('script!d3.chart/d3.chart.js');
 
-require('./less/Zip.less');
+require('./less/zipline.less');
 
 var zipline = {
   components: {
@@ -16,7 +16,10 @@ var zipline = {
       Picker: require('./components/page/Picker'),
       Timeline: require('./components/page/Timeline')
     },
-    vertical: {}
+    vertical: {
+      StackedDayBackground: require('./components/vertical/StackedDayBackground'),
+      StackedGroups: require('./components/vertical/StackedGroups')
+    }
   },
   dataservices: {
     BasicFilter: require('./dataservices/BasicFilter')

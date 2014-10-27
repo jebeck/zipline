@@ -30,14 +30,14 @@ d3.chart('Background').extend('TimeLabels', {
       events: {
         merge: function() {
           var xScale = chart.xScale(), timezone = chart.timezone();
-          var shift = chart.opts().shiftRight;
+          var opts = chart.opts();
           this.attr({
             x: function(d) {
-              return xScale(d) + shift;
+              return xScale(d) + opts.shiftRight;
             }
           })
           .text(function(d) {
-            return moment(d).tz(timezone).format('h:mm a');
+            return moment(d).tz(timezone).format(opts.format);
           });
         },
         exit: function() {

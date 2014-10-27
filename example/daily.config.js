@@ -2,7 +2,6 @@
 var React = require('react');
 
 var d3 = window.d3;
-var moment = require('moment-timezone');
 
 var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
@@ -56,18 +55,8 @@ module.exports = function(data) {
   var dataService = new BasicFilter(data);
   return {
     slices: [{
-      id: 'TimeLabels',
-      chart: Background,
-      data: oneHourIntervals,
-      extension: 'TimeLabels',
-      opts: {
-        fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end),
-        shiftRight: 10
-      },
-      weight: 0.25
-    }, {
       id: 'Activity',
-      chart: Background,
+      background: Background,
       data: oneHourIntervals,
       label: {
         component: Label,
@@ -79,11 +68,20 @@ module.exports = function(data) {
       weight: 2
     }, {
       id: 'BG',
-      chart: BGBackground,
+      background: BGBackground,
       data: oneHourIntervals,
       label: {
         component: Label,
         text: 'Blood Glucose'
+      },
+      opts: {
+        bgCategories: bgCategories,
+        fillScales: {
+          low: scales.hourcolorscale(bgIntervalColors.low.start, bgIntervalColors.low.end),
+          target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
+          high: scales.hourcolorscale(bgIntervalColors.high.start, bgIntervalColors.high.end)
+        },
+        r: bgSize
       },
       plot: [{
         chart: CBG,
@@ -96,18 +94,10 @@ module.exports = function(data) {
         id: 'CBG',
         opts: {
           bgCategories: bgCategories,
+          bgFillColor: 'white',
           r: bgSize
         }
       }],
-      opts: {
-        bgCategories: bgCategories,
-        fillScales: {
-          low: scales.hourcolorscale(bgIntervalColors.low.start, bgIntervalColors.low.end),
-          target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
-          high: scales.hourcolorscale(bgIntervalColors.high.start, bgIntervalColors.high.end)
-        },
-        r: bgSize
-      },
       weight: 3
     }]
   };

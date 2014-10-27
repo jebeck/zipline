@@ -15,9 +15,9 @@ var Timeline = React.createClass({
   },
   componentDidMount: function() {
     var zipNode = this.refs.zipline.getDOMNode();
-    var opts = {};
-    var zipline = Zipline().create(zipNode, this.props.timezone, opts);
     var zipConfig = this.props.zipConfig;
+    var opts = zipConfig.opts || {};
+    var zipline = Zipline().create(zipNode, this.props.timezone, opts);
     zipline.render(zipConfig.slices);
     d3.select(window).on('resize', function() {
       zipline.clear();

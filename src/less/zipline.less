@@ -1,4 +1,6 @@
 @import 'colors.less';
+@import '../components/horizontal/horizontal.less';
+@import '../components/vertical/vertical.less';
 
 ::-webkit-scrollbar {
   -webkit-appearance: none;
@@ -63,7 +65,6 @@ body {
 
 .FlexItem {
   &.FlexItem-dashboard {
-    // background-color: red;
     &.FlexItem-dashboard--alone {
       width: @full-width;
     }
@@ -71,17 +72,14 @@ body {
     height: @full-height;
   }
   &.FlexItem-details {
-    // background-color: green;
     width: @partial-width--sub;
     height: @full-height;
   }
   &.FlexItem-picker {
-    // background-color: yellow;
     width: @partial-width--sub;
     height: @full-height;
   }
   &.FlexItem-timeline {
-    // background-color: white;
     &.FlexItem-timeline--alone {
       width: @full-width;
     }
@@ -103,7 +101,6 @@ body {
   .Chrome {
     width: @full-width;
 
-    // background-color: blue;
     flex-basis: @chrome-height;
   }
 
@@ -124,11 +121,11 @@ body {
     }
 
     .Slice {
-      flex-basis: @chrome-height;
+      flex-basis: @chrome-height/2;
       width: @full-width;
 
-      &.Slice--quarter {
-        flex-grow: 0.25;
+      &.Slice--half {
+        flex-grow: 0.5;
       }
       &.Slice--single {
         flex-grow: 1;
@@ -158,10 +155,4 @@ body {
       }
     }
   }
-}
-
-.Background-label {
-  fill: white;
-  font-style: italic;
-  dominant-baseline: central;
 }
