@@ -1,7 +1,8 @@
 var diabetes = {
   plot: {
     BGBackground: require('./plot/BGBackground'),
-    CBG: require('./plot/CBG')
+    CBG: require('./plot/CBG'),
+    CBGLine: require('./plot/CBGLine')
   },
   util: {
     colors: require('./util/colors'),

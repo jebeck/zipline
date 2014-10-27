@@ -24,6 +24,10 @@ d3.chart('BGBackground', {
         return reuse(this.selectAll('rect').data(data, function(d) {
           return d;
         }));
+        // commented out = vanilla enter selection, without reusing nodes
+        // return this.selectAll('rect').data(data, function(d) {
+        //   return d;
+        // });
       },
       insert: function() {
         var height = chart.height();
@@ -41,9 +45,9 @@ d3.chart('BGBackground', {
           var yScale = chart.yScale();
           var opts = chart.opts(), timezone = chart.timezone();
           this.attr({
-            x: xPosition,
+            fill: function(d) { return opts.fillScales.low(Math.abs(12 - moment(d).tz(timezone).hour())); },
             width: rectWidth,
-            fill: function(d) { return opts.fillScales.low(Math.abs(12 - moment(d).tz(timezone).hour())); }
+            x: xPosition
           });
         },
         exit: function() {

@@ -10,6 +10,10 @@ var BasicFilter = function(data) {
     return dataByDatetime.filter(bounds).top(Infinity);
   };
 
+  this.all = function() {
+    return dataByDatetime.filterAll().top(Infinity);
+  };
+
   return this;
 };
 

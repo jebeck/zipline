@@ -1,7 +1,7 @@
 var React = require('react');
 
 require('css!vc-reset-css/reset.min.css');
-require('./less/App.less');
+require('./less/example.less');
 
 var App = require('./App');
 

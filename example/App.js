@@ -7,11 +7,13 @@ var zipline = require('../src');
 var Zippage = zipline.Zippage;
 var BasicFilter = zipline.dataservices.BasicFilter;
 
-var config = require('./zipline.config');
+var dailyConfig = require('./daily.config');
+var weeklyConfig = require('./weekly.config');
 
 var App = React.createClass({
   getInitialState: function() {
     return {
+      chartType: 'daily',
       dataUrl: '../data/2014.json',
       loading: true
     };
@@ -48,7 +50,7 @@ var App = React.createClass({
       <div className="App">
         <div className="App-chrome" ref="chrome" />
         <div className="App-chart" ref="chart">
-            <Zippage data={this.state.data} zipConfig={config(this.state.data)} />
+            <Zippage data={this.state.data} zipConfig={dailyConfig(this.state.data)} />
         </div>
       </div>
       );

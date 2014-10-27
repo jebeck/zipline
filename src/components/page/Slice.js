@@ -11,7 +11,7 @@ var Slice = React.createClass({
     var slice = this.props.slice;
     var sliceClass = cx({
       'Slice': true,
-      'Slice-quarter': slice.weight === 0.25,
+      'Slice-half': slice.weight === 0.5,
       'Slice--single': slice.weight === 1,
       'Slice--double': slice.weight === 2,
       'Slice--triple': slice.weight === 3

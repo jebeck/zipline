@@ -5,54 +5,9 @@ var reuse = zipline.util.reuse;
 
 var scales = require('../util/scales');
 
-d3.chart('CBG', {
+d3.chart('CBGLine', {
   initialize: function() {
     var chart = this;
-
-    var bgFill = function(d) {
-      return chart.bgFillScale()(d);
-    };
-
-    this.layer('CBG-circles', this.base.append('g').attr({
-      'class': 'CBG-circles'
-    }), {
-      dataBind: function(data) {
-        return reuse(this.selectAll('circle').data(data, function(d) {
-          return d.id;
-        }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('circle').data(data, function(d) {
-        //   return d.id;
-        // });
-      },
-      insert: function() {
-        var opts = chart.opts();
-
-        return this.append('circle')
-          .attr({
-            fill: opts.bgFillColor ? opts.bgFillColor : bgFill,
-            r: opts.r,
-            'class': 'CBG-circle'
-          });
-      },
-      events: {
-        merge: function() {
-          var xScale = chart.xScale();
-          var yScale = chart.yScale();
-          this.attr({
-            cx: function(d) {
-              return xScale(new Date(d.trueUtcTime));
-            },
-            cy: function(d) {
-              return yScale(d.value);
-            }
-          });
-        },
-        exit: function() {
-          this.remove();
-        }
-      }
-    });
   },
   bgFillScale: function(bgCategories) {
     if (!arguments.length) { return this._bgFillScale; }
@@ -98,15 +53,10 @@ module.exports = function() {
   return {
     create: function(el, opts) {
       opts = opts || {};
-      var defaults = {
-        bgCategories: {
-          low: 80,
-          high: 180
-        }
-      };
+      var defaults = {};
       _.defaults(opts, defaults);
 
-      chart = el.chart('CBG')
+      chart = el.chart('CBGLine')
         .opts(opts.opts)
         .height(opts.height)
         .width(opts.width)
@@ -116,11 +66,6 @@ module.exports = function() {
     },
     render: function(data) {
       chart.draw(data);
-
-      return this;
-    },
-    destroy: function() {
-      chart.remove();
 
       return this;
     }

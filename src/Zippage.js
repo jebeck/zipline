@@ -14,8 +14,8 @@ var Zippage = React.createClass({
   getDefaultProps: function() {
     return {
       dateFormat: 'dddd, MMMM Do',
-      details: true,
-      dashboard: true,
+      details: false,
+      dashboard: false,
       monthFormat: 'MMMM YYYY',
       picker: true,
       timezone: 'US/Pacific'

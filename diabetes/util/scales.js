@@ -9,7 +9,8 @@ module.exports = {
   bg: function(height, pad) {
     return d3.scale.linear()
       .domain([0, 401])
-      .range([height - pad, pad]);
+      .range([height - pad, pad])
+      .clamp(true);
   },
   bgFill: function(bgCategories) {
     var categoryColors = {

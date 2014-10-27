@@ -11,26 +11,29 @@ d3.chart('Zipline', {
 
     var makeSliceFn = function(bounds) {
       chart.slices = [];
-      return function(d, el, adjustedHeight) {
-        var slice = d.chart().create(el, {
+      return function(d, el, adjusted) {
+        var horizontal = chart.scrollDirection() === 'horizontal';
+        var slice = d.background().create(el, {
           extension: d.extension,
-          height: adjustedHeight,
+          height: adjusted.height,
           majorScale: chart.scale(),
           opts: d.opts,
           timezone: chart.timezone(),
-          width: chart.width()
+          width: horizontal ? chart.width() : adjusted.width
         });
         slice.data = d.data;
+        slice.once = d.once;
         chart.slices.push(slice);
         _.each(d.plot, function(p) {
           var sliver = p.chart().create(el, {
-            height: adjustedHeight,
+            height: adjusted.height,
             majorScale: chart.scale(),
             opts: p.opts,
             timezone: chart.timezone(),
-            width: chart.width()
+            width: horizontal ? chart.width() : adjusted.width
           });
           sliver.data = p.data;
+          sliver.once = p.once;
           chart.slices.push(sliver);
         });
       };
@@ -54,11 +57,17 @@ d3.chart('Zipline', {
           }
 
           var node = this;
+          var horizontal = chart.scrollDirection() === 'horizontal';
           this.append('svg')
             .attr({
               width: chart.width(),
               height: function(d, i) {
-                return node[0][i].offsetHeight;
+                if (horizontal) {
+                  return node[0][i].offsetHeight;
+                }
+                else {
+                  return chart.height();
+                }
               }
             })
             .append('g')
@@ -80,7 +89,8 @@ d3.chart('Zipline', {
               if (!label.empty()) {
                 adjustedHeight = node[0][i].offsetHeight - label[0][0].offsetHeight;
               }
-              sliceFn(d, d3.select(this), adjustedHeight);
+              var adjustedWidth = node[0][i].offsetWidth;
+              sliceFn(d, d3.select(this), {width: adjustedWidth, height: adjustedHeight});
             });
         }
       }
@@ -153,8 +163,7 @@ module.exports = function() {
             moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
           ]
         },
-        timezone: timezone,
-        yOffset: 0
+        timezone: timezone
       };
       _.defaults(opts, defaults);
 
@@ -179,7 +188,7 @@ module.exports = function() {
       this.relocate(opts.location.bounds);
 
       scrolls.on('scroll', function() {
-        var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollHeight';
+        var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollTop';
         var newDate = chart.scale().invert(scrolls.property(scrollProp));
         chart.location({
           bounds: [newDate, d3.time.day.utc.offset(newDate, 1)],
@@ -188,8 +197,11 @@ module.exports = function() {
         emitter.emit('navigatedToCenter', chart.location().center.toISOString());
 
         _.each(chart.slices, function(slice) {
-          var bounds = chart.location().bounds;
-          slice.render(slice.data(bounds));
+          if (!slice.once) {
+            var bounds = chart.location().bounds;
+            var data = slice.data(bounds);
+            slice.render(slice.data(bounds));
+          }
         });
       });
 
