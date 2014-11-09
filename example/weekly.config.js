@@ -30,9 +30,10 @@ var bgCategories = {
 };
 
 var oneHourIntervals = function(bounds) {
+  var beginning = d3.time.year.utc.floor(bounds[0]);
   return d3.time.hour.utc.range(
-      bounds[0],
-      d3.time.day.utc.offset(bounds[1], 364)
+      d3.time.day.utc.offset(beginning, -1),
+      d3.time.day.utc.offset(d3.time.day.utc.offset(beginning, 1), 365)
     );
 };
 
@@ -53,7 +54,7 @@ module.exports = function(data) {
       },
       scroll: 'vertical',
       timespan: {
-        initial: [
+        first: [
           moment(now).tz(timezone).startOf('year').toDate(),
           moment(now).tz(timezone).startOf('year').add(daysInView, 'days').toDate()
         ],

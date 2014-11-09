@@ -19,7 +19,7 @@ var Timeline = React.createClass({
     var zipConfig = this.props.zipConfig;
     var opts = zipConfig.opts || {};
     var zipline = Zipline().create(zipNode, this.props.timezone, opts);
-    zipline.render(zipConfig.slices);
+    zipline.render(zipConfig.slices).relocate();
     d3.select(window).on('resize', function() {
       zipline.clear();
       var dims = zipline.getDimensions(zipNode, opts.scroll === 'horizontal', opts.timespan);
