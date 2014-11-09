@@ -9,25 +9,6 @@ d3.chart('StackedGroups', {
   initialize: function() {
     var chart = this;
 
-    // likely factor this out into weekly chart config
-    this.base.insert('defs', 'g')
-      .append('marker')
-      .attr({
-        id: 'CBG-lineMarker',
-        markerWidth: 2,
-        markerHeight: 2,
-        refX: 1,
-        refY: 1
-      })
-      .append('circle')
-      .attr({
-        cx: 1,
-        cy: 1,
-        r: 1,
-        stroke: 'none',
-        fill: 'white'
-      });
-
     this.layer('Stacked-groups', this.base.append('g').attr({
       'class': 'Stacked-groups'
     }), {
@@ -190,6 +171,9 @@ d3.chart('StackedGroups', {
   opts: function(opts) {
     if (!arguments.length) { return this._opts; }
     this._opts = opts;
+    if (opts.marker) {
+      opts.marker(this.base);
+    }
     return this;
   },
   timezone: function(timezone) {

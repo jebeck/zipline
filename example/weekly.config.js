@@ -23,6 +23,25 @@ var intervalColors = {
 var diabetes = require('../diabetes/');
 var CBGCircle = diabetes.plot.CBGCircle;
 var CBGLine = diabetes.plot.CBGLine;
+var CBGMarker = function(selection) {
+  selection.insert('defs', 'g')
+    .append('marker')
+    .attr({
+      id: 'CBG-lineMarker',
+      markerWidth: 2,
+      markerHeight: 2,
+      refX: 1,
+      refY: 1
+    })
+    .append('circle')
+    .attr({
+      cx: 1,
+      cy: 1,
+      r: 1,
+      stroke: 'none',
+      fill: 'white'
+    });
+};
 
 var bgCategories = {
   low: 65,
@@ -91,14 +110,14 @@ module.exports = function(data) {
             },
             id: function(day) { return 'ClipPath-=-' + day; }
           },{
-            chart: CBGCircle,
+            chart: CBGLine,
             data: function(bounds) {
               return dataService.filter([
                 bounds[0].toISOString(),
                 bounds[1].toISOString()
               ]);
             },
-            id: function(day) { return 'CBGCircles-=-' + day; },
+            id: function(day) { return 'CBGLine-=-' + day; },
             opts: {
               bgCategories: bgCategories,
               bgFillColor: 'white',
@@ -108,7 +127,8 @@ module.exports = function(data) {
         },
         daysInView: daysInView,
         labelFormat: function(d) { return moment(d).format('ddd, MMM Do'); },
-        labelGutter: 120
+        labelGutter: 120,
+        marker: CBGMarker
       },
       weight: 1
     }]
