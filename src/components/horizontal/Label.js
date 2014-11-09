@@ -5,12 +5,14 @@ var cx = React.addons.classSet;
 var Label = React.createClass({
   propTypes: {
     id: React.PropTypes.string.isRequired,
+    fixed: React.PropTypes.bool.isRequired,
     large: React.PropTypes.bool.isRequired,
     text: React.PropTypes.string.isRequired
   },
   render: function() {
     var labelClass = cx({
       'Label': true,
+      'Label--fixed': this.props.fixed,
       'Label--regular': !this.props.large,
       'Label--large': this.props.large
     });

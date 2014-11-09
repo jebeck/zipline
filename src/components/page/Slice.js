@@ -29,7 +29,7 @@ var Slice = React.createClass({
     var Label = label.component;
     /* jshint ignore:start */
     return (
-      <Label large={!this.props.dashboard} text={label.text} id={this.props.slice.id + 'Label'} />
+      <Label fixed={true} large={!this.props.dashboard} text={label.text} id={this.props.slice.id + 'Label'} />
     );
     /* jshint ignore:end */
   },

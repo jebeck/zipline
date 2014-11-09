@@ -3,7 +3,7 @@ var crossfilter = require('crossfilter');
 var BasicFilter = function(data) {
   var crossData = crossfilter(data);
   var dataByDatetime = crossData.dimension(function(d) {
-    return d.trueUtcTime.slice(0,10);
+    return d.trueUtcTime;
   });
 
   this.filter = function(bounds) {

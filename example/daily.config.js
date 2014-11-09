@@ -20,7 +20,7 @@ var intervalColors = {
 
 var diabetes = require('../diabetes/');
 var BGBackground = diabetes.plot.BGBackground;
-var CBG = diabetes.plot.CBG;
+var CBG = diabetes.plot.CBGCircleReuse;
 
 var bgColors = diabetes.util.colors.bg;
 var bgIntervalColors = {

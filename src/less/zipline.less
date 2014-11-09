@@ -1,5 +1,6 @@
 @import 'colors.less';
 @import '../components/horizontal/horizontal.less';
+@import '../components/page/page.less';
 @import '../components/vertical/vertical.less';
 
 ::-webkit-scrollbar {
@@ -94,65 +95,19 @@ body {
 
 @chrome-height: 2.5em;
 
-.Timeline {
+.Zipline {
+  width: @full-width;
+  height: @full-height - @chrome-height;
+  
   .flex-center;
   flex-direction: column;
 
-  .Chrome {
-    width: @full-width;
-
-    flex-basis: @chrome-height;
+  &.Zipline--horizontalScroll {
+    overflow-x: scroll;
+    overflow-y: hidden;
   }
-
-  .Zipline {
-    width: @full-width;
-    height: @full-height - @chrome-height;
-    
-    .flex-center;
-    flex-direction: column;
-
-    &.Zipline--horizontalScroll {
-      overflow-x: scroll;
-      overflow-y: hidden;
-    }
-    &.Zipline--verticalScroll {
-      overflow-x: hidden;
-      overflow-y: scroll;
-    }
-
-    .Slice {
-      flex-basis: @chrome-height/2;
-      width: @full-width;
-
-      &.Slice--half {
-        flex-grow: 0.5;
-      }
-      &.Slice--single {
-        flex-grow: 1;
-      }
-      &.Slice--double {
-        flex-grow: 2;
-      }
-      &.Slice--triple {
-        flex-grow: 3;
-      }
-
-      .Label {
-        color: @label;
-        margin: 0;
-        position: fixed;
-
-        &.Label--large {
-          font-size: @label-size--large;
-        }
-        &.Label--regular {
-          font-size: @label-size--regular;
-        }
-        h3 {
-          font-size: inherit;
-          margin: @label-margin;
-        }
-      }
-    }
+  &.Zipline--verticalScroll {
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 }
