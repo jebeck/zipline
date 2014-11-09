@@ -2,6 +2,7 @@
 var React = require('react/addons');
 var cx = React.addons.classSet;
 
+var Label = require('../horizontal/Label');
 var Slice = require('./Slice');
 var Zipline = require('../../Zipline');
 
@@ -39,13 +40,29 @@ var Timeline = React.createClass({
       'Zipline': true
     });
 
+    var label = this.renderLabel();
+
     var slices = this.renderSlices();
     /* jshint ignore:start */
     return (
       <div className={timelineClass}>
         <div className="Chrome"></div>
+        {label}
         <div className={ziplineClass} ref="zipline">{slices}</div>
       </div>
+    );
+    /* jshint ignore:end */
+  },
+  renderLabel: function() {
+    var label = this.props.zipConfig.opts ? this.props.zipConfig.opts.label || null : null;
+    if (!label) {
+      return null;
+    }
+
+    var Label = label.component;
+    /* jshint ignore:start */
+    return (
+      <Label fixed={false} large={!this.props.dashboard} text={label.text} id={'ZiplineLabel'}/>
     );
     /* jshint ignore:end */
   },

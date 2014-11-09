@@ -17,6 +17,7 @@ var zipline = {
       Timeline: require('./components/page/Timeline')
     },
     vertical: {
+      ClipPath: require('./components/vertical/ClipPath'),
       StackedDayBackground: require('./components/vertical/StackedDayBackground'),
       StackedGroups: require('./components/vertical/StackedGroups')
     }

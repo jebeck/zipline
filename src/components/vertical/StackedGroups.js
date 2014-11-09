@@ -9,6 +9,25 @@ d3.chart('StackedGroups', {
   initialize: function() {
     var chart = this;
 
+    // likely factor this out into weekly chart config
+    this.base.insert('defs', 'g')
+      .append('marker')
+      .attr({
+        id: 'CBG-lineMarker',
+        markerWidth: 2,
+        markerHeight: 2,
+        refX: 1,
+        refY: 1
+      })
+      .append('circle')
+      .attr({
+        cx: 1,
+        cy: 1,
+        r: 1,
+        stroke: 'none',
+        fill: 'white'
+      });
+
     this.layer('Stacked-groups', this.base.append('g').attr({
       'class': 'Stacked-groups'
     }), {
@@ -35,17 +54,29 @@ d3.chart('StackedGroups', {
             }
           })
           .each(function(d) {
-            var domain = [d, d3.time.day.utc.offset(d, 1)];
+            var day = moment(d).tz(tz).format('YYYY-MM-DD');
+            var domain = [d, moment(d).tz(tz).add(1, 'days')];
             var background = opts.embeddedChart.background().create(d3.select(this), {
               height: height,
-              id: opts.embeddedChart.id(moment(d).tz(tz).format('YYYY-MM-DD')),
+              id: opts.embeddedChart.id(day),
               opts: opts.embeddedChart.opts,
               timezone: tz,
               width: chart.width() - opts.labelGutter,
-              xScale: scales.zipscale(chart.width() - opts.labelGutter, [d, moment(d).tz(tz).add(1, 'days')]),
+              xScale: scales.zipscale(chart.width() - opts.labelGutter, domain),
               yScale: chart.yScale()
             });
             background.render(opts.embeddedChart.data(domain));
+            for (var i = 0; i < opts.embeddedChart.plot.length; ++i) {
+              var plotConfig = opts.embeddedChart.plot[i];
+              var plot = plotConfig.chart().create(d3.select(this), {
+                height: height,
+                id: plotConfig.id(day),
+                opts: plotConfig.opts || {},
+                width: chart.width() - opts.labelGutter,
+                xScale: scales.zipscale(chart.width() - opts.labelGutter, domain)
+              });
+              plot.render(plotConfig.data(domain));
+            }
           });
         }
       }

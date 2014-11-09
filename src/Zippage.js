@@ -44,8 +44,6 @@ var Zippage = React.createClass({
   render: function() {
     var details = this.props.details ? this.renderDetails() : null;
     var timeline = this.renderTimeline();
-    var picker = this.renderPicker();
-    var dashboard = this.props.dashboard ? this.renderDashboard() : null;
 
     var timelineRowClass = cx({
       'Zippage-row': true,
@@ -53,10 +51,7 @@ var Zippage = React.createClass({
       'Zippage-row--top': this.props.dashboard
     });
 
-    var bottomRowClass = cx({
-      'Zippage-row': true,
-      'Zippage-row--bottom': this.props.dashboard
-    });
+    var bottomRow = this.renderBottomRow();
 
     /* jshint ignore:start */
     return (
@@ -65,10 +60,28 @@ var Zippage = React.createClass({
           {details}
           {timeline}
         </div>
-        <div className={bottomRowClass}>
-          {picker}
-          {dashboard}
-        </div>
+        {bottomRow}
+      </div>
+    );
+    /* jshint ignore:end */
+  },
+  renderBottomRow: function() {
+    if (!this.props.dashboard) {
+      return null;
+    }
+
+    var picker = this.renderPicker();
+    var dashboard = this.props.dashboard ? this.renderDashboard() : null;
+
+    var bottomRowClass = cx({
+      'Zippage-row': true,
+      'Zippage-row--bottom': this.props.dashboard
+    });
+    /* jshint ignore:start */
+    return (
+      <div className={bottomRowClass}>
+        {picker}
+        {dashboard}
       </div>
     );
     /* jshint ignore:end */

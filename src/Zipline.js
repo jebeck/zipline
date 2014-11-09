@@ -4,6 +4,7 @@ var EventEmitter = require('events').EventEmitter;
 var moment = require('moment-timezone');
 
 var scales = require('./util/scales');
+var timer = require('./util/timer');
 
 d3.chart('Zipline', {
   initialize: function() {
@@ -232,9 +233,11 @@ module.exports = function() {
       chart.draw(data);
 
       // initial draw
+      timer.start('Initial Draw');
       _.each(chart.slices, function(slice) {
         slice.render(slice.data(bounds));
       });
+      timer.end('Initial Draw');
 
       return this;
     },

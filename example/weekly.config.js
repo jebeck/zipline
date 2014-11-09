@@ -5,6 +5,7 @@ var d3 = window.d3;
 var moment = require('moment-timezone');
 
 var zipline = require('../src/');
+var ClipPath = zipline.components.vertical.ClipPath;
 var StackedGroups = zipline.components.vertical.StackedGroups;
 var Background = zipline.components.vertical.StackedDayBackground;
 var BasicFilter = zipline.dataservices.BasicFilter;
@@ -20,6 +21,7 @@ var intervalColors = {
 }; 
 
 var diabetes = require('../diabetes/');
+var CBGCircle = diabetes.plot.CBGCircle;
 var CBGLine = diabetes.plot.CBGLine;
 
 var bgCategories = {
@@ -45,6 +47,10 @@ module.exports = function(data) {
   var now = moment(), timezone = 'US/Pacific';
   return {
     opts: {
+      label: {
+        component: Label,
+        text: 'Blood Glucose'
+      },
       scroll: 'vertical',
       timespan: {
         initial: [
@@ -78,17 +84,24 @@ module.exports = function(data) {
             fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
           },
           plot: [{
-            chart: CBGLine,
+            chart: ClipPath,
+            data: function() {
+              return [];
+            },
+            id: function(day) { return 'ClipPath-=-' + day; }
+          },{
+            chart: CBGCircle,
             data: function(bounds) {
               return dataService.filter([
-                d3.time.day.utc.offset(bounds[0], -1).toISOString(),
-                d3.time.day.utc.offset(bounds[1], 1).toISOString()
+                bounds[0].toISOString(),
+                bounds[1].toISOString()
               ]);
             },
-            id: function(day) { return 'CBGLine-=-' + day; },
+            id: function(day) { return 'CBGCircles-=-' + day; },
             opts: {
               bgCategories: bgCategories,
-              r: bgSize
+              bgFillColor: 'white',
+              r: 2.5
             }
           }]
         },

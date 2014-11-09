@@ -2,3 +2,30 @@
   fill: #EFEFEF;
   dominant-baseline: central;
 }
+
+// this might not be the best way to handle positioning vertical scrolling
+// i.e., stacked-group component labels on the left
+// counting on the differing parentage of the Label in this case
+.FlexItem > .Label {
+  width: 100%;
+}
+
+.Label {
+  color: @label;
+  margin: 0;
+
+  &.Label--large {
+    font-size: @label-size--large;
+  }
+  &.Label--regular {
+    font-size: @label-size--regular;
+  }
+  h3 {
+    font-size: inherit;
+    margin: @label-margin;
+  }
+
+  &.Label--fixed {
+    position: fixed;
+  }
+}

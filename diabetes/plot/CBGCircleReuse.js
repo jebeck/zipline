@@ -1,46 +1,56 @@
 var d3 = window.d3;
 
+var zipline = require('../../src/');
+var reuse = zipline.util.reuse;
+
 var scales = require('../util/scales');
 
-d3.chart('CBGLine', {
+d3.chart('CBG', {
   initialize: function() {
     var chart = this;
 
-    var cbgLine = function(xScale, yScale) {
-      return d3.svg.line()
-        .x(function(d) { return xScale(new Date(d.trueUtcTime)); })
-        .y(function(d) { return yScale(d.value); })
-        .interpolate('linear');
+    var bgFill = function(d) {
+      return chart.bgFillScale()(d);
     };
 
-    this.layer('CBG-plot', this.base.append('g').attr({
-      'class': 'CBG-plot'
+    this.layer('CBG-circles', this.base.append('g').attr({
+      'class': 'CBG-circles'
     }), {
       dataBind: function(data) {
-        return this.selectAll('path')
-          .data([data]);
+        return reuse(this.selectAll('circle').data(data, function(d) {
+          return d.id;
+        }));
+        // commented out = vanilla enter selection, without reusing nodes
+        // return this.selectAll('circle').data(data, function(d) {
+        //   return d.id;
+        // });
       },
       insert: function() {
-        var clipPathUrl = chart.base.select('.ClipPath').attr('id');
-        return this.append('path')
+        var opts = chart.opts();
+
+        return this.append('circle')
           .attr({
-            'clip-path': 'url(#' + clipPathUrl + ')',
-            fill: 'none',
-            stroke: 'rgba(0,0,0,0)',
-            'stroke-width': 2,
-            'marker-start': 'url(#CBG-lineMarker)',
-            'marker-mid': 'url(#CBG-lineMarker)',
-            'marker-end': 'url(#CBG-lineMarker)'
+            r: opts.r,
+            'class': 'CBG-circle'
           });
       },
       events: {
-        enter: function() {
+        merge: function() {
           var xScale = chart.xScale(), yScale = chart.yScale();
-          var pathGenerator = cbgLine(xScale, yScale);
+          var opts = chart.opts();
           
           this.attr({
-            d: function(d) { return pathGenerator(d); }
+            fill: opts.bgFillColor ? opts.bgFillColor : bgFill,
+            cx: function(d) {
+              return xScale(new Date(d.trueUtcTime));
+            },
+            cy: function(d) {
+              return yScale(d.value);
+            }
           });
+        },
+        exit: function() {
+          this.remove();
         }
       }
     });
@@ -54,11 +64,6 @@ d3.chart('CBGLine', {
     if (!arguments.length) { return this._height; }
     this._height = height;
     this.yScale(height);
-    return this;
-  },
-  id: function(id) {
-    if (!arguments.length) { return this._id; }
-    this._id = id;
     return this;
   },
   opts: function(opts) {
@@ -94,20 +99,29 @@ module.exports = function() {
   return {
     create: function(el, opts) {
       opts = opts || {};
-      var defaults = {};
+      var defaults = {
+        bgCategories: {
+          low: 80,
+          high: 180
+        }
+      };
       _.defaults(opts, defaults);
 
-      chart = el.chart('CBGLine')
+      chart = el.chart('CBG')
         .opts(opts.opts)
         .height(opts.height)
-        .id(opts.id)
         .width(opts.width)
-        .xScale(opts.xScale);
+        .xScale(opts.majorScale);
 
       return this;
     },
     render: function(data) {
       chart.draw(data);
+
+      return this;
+    },
+    destroy: function() {
+      chart.remove();
 
       return this;
     }

@@ -1,0 +1,28 @@
+.Slice {
+  flex-basis: @chrome-height/2;
+  width: @full-width;
+
+  &.Slice--half {
+    flex-grow: 0.5;
+  }
+  &.Slice--single {
+    flex-grow: 1;
+  }
+  &.Slice--double {
+    flex-grow: 2;
+  }
+  &.Slice--triple {
+    flex-grow: 3;
+  }
+}
+
+.Timeline {
+  .flex-center;
+  flex-direction: column;
+
+  .Chrome {
+    width: @full-width;
+
+    flex-basis: @chrome-height;
+  }
+}

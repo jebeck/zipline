@@ -1,6 +1,6 @@
 var d3 = window.d3;
 var _ = require('lodash');
-var moment = require('moment-timezone');
+var moment = require('moment');
 
 module.exports = {
   hourcolorscale: function(c1, c2) {
