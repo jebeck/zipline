@@ -149,7 +149,7 @@ module.exports = function() {
       var defaults = {
         scroll: 'horizontal',
         timespan: {
-          initial: [
+          first: [
             moment(now).tz(timezone).startOf('year').toDate(),
             moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
           ],
@@ -186,7 +186,6 @@ module.exports = function() {
         'Zipline--horizontalScroll': horizontal,
         'Zipline--verticalScroll': !horizontal
       });
-      this.relocate(opts.location.bounds);
 
       scrolls.on('scroll', function() {
         var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollTop';
@@ -210,7 +209,7 @@ module.exports = function() {
     },
     emitter: emitter,
     getDimensions: function(el, horizontal, timespan) {
-      var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, timespan.initial);
+      var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, timespan.first);
       var scaleExtent = Math.abs(scale(timespan.total[0]) - scale(timespan.total[1]));
 
       var width = horizontal ? scaleExtent : el.offsetWidth;
@@ -224,7 +223,7 @@ module.exports = function() {
         scrolls.property('scrollLeft', scale(bounds[0]));
       }
       else {
-        scrolls.property('scrollHeight', scale(bounds[0]));
+        scrolls.property('scrollTop', scale(bounds[0]));
       }
     },
     render: function(data) {
