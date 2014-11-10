@@ -6,7 +6,8 @@ var diabetes = {
     CBGCircleReuse: require('./plot/CBGCircleReuse'),
     CBGCircle: require('./plot/CBGCircle'),
     CBGLine: require('./plot/CBGLine'),
-    SMBGCircle: require('./plot/SMBGCircle')
+    SMBGCircle: require('./plot/SMBGCircle'),
+    SMBGCircleReuse: require('./plot/SMBGCircleReuse')
   },
   util: {
     colors: require('./util/colors'),
