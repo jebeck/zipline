@@ -5,7 +5,7 @@ var reuse = zipline.util.reuse;
 
 var scales = require('../util/scales');
 
-d3.chart('CBGCircleReuse', {
+d3.chart('SMBGCircleReuse', {
   initialize: function() {
     var chart = this;
 
@@ -13,8 +13,8 @@ d3.chart('CBGCircleReuse', {
       return chart.bgFillScale()(d);
     };
 
-    this.layer('CBG-circles', this.base.append('g').attr({
-      'class': 'CBG-circles'
+    this.layer('SMBG-circles', this.base.append('g').attr({
+      'class': 'SMBG-circles'
     }), {
       dataBind: function(data) {
         return reuse(this.selectAll('circle').data(data, function(d) {
@@ -31,7 +31,7 @@ d3.chart('CBGCircleReuse', {
         return this.append('circle')
           .attr({
             r: opts.r,
-            'class': 'CBG-circle'
+            'class': 'SMBG-circle'
           });
       },
       events: {
@@ -46,7 +46,9 @@ d3.chart('CBGCircleReuse', {
             },
             cy: function(d) {
               return yScale(d.value);
-            }
+            },
+            stroke: opts.bgFillColor ? opts.bgFillColor : bgFill,
+            'stroke-width': 2
           });
         },
         exit: function() {
@@ -107,7 +109,7 @@ module.exports = function() {
       };
       _.defaults(opts, defaults);
 
-      chart = el.chart('CBGCircleReuse')
+      chart = el.chart('SMBGCircleReuse')
         .opts(opts.opts)
         .height(opts.height)
         .width(opts.width)

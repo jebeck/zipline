@@ -21,6 +21,7 @@ var intervalColors = {
 var diabetes = require('../diabetes/');
 var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBGCircleReuse;
+var SMBG = diabetes.plot.SMBGCircleReuse;
 
 var bgColors = diabetes.util.colors.bg;
 var bgFillColor = convert(bgColors.fill);
@@ -38,7 +39,10 @@ var bgIntervalColors = {
     end: convert(bgColors.high.lighter)
   }
 };
-var bgSize = 3;
+var bgSizes = {
+  cbg: 2.5,
+  smbg: 8
+};
 
 var oneHourIntervals = function(bounds) {
   return d3.time.hour.utc.range(
@@ -53,7 +57,13 @@ var bgCategories = {
 };
 
 module.exports = function(data) {
-  var dataService = new BasicFilter(data);
+  var grouped = _.groupBy(data, function(d) { return d.type; });
+  var dataServices = {};
+  var types = Object.keys(grouped);
+  for (var i = 0; i < types.length; ++i) {
+    var type = types[i];
+    dataServices[type] = new BasicFilter(grouped[type]);
+  }
   return {
     slices: [{
       id: 'Activity',
@@ -82,12 +92,12 @@ module.exports = function(data) {
           target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
           high: scales.hourcolorscale(bgIntervalColors.high.start, bgIntervalColors.high.end)
         },
-        r: bgSize
+        r: bgSizes.cbg
       },
       plot: [{
         chart: CBG,
         data: function(bounds) {
-          return dataService.filter([
+          return dataServices.cbg.filter([
             d3.time.day.utc.offset(bounds[0], -1).toISOString(),
             d3.time.day.utc.offset(bounds[1], 1).toISOString()
           ]);
@@ -96,7 +106,21 @@ module.exports = function(data) {
         opts: {
           bgCategories: bgCategories,
           bgFillColor: bgFillColor,
-          r: bgSize
+          r: bgSizes.cbg
+        }
+      }, {
+        chart: SMBG,
+        data: function(bounds) {
+          return dataServices.smbg.filter([
+            d3.time.day.utc.offset(bounds[0], -1).toISOString(),
+            d3.time.day.utc.offset(bounds[1], 1).toISOString()
+          ]);
+        },
+        id: 'SMBG',
+        opts: {
+          bgCategories: bgCategories,
+          bgFillColor: bgFillColor,
+          r: bgSizes.smbg
         }
       }],
       weight: 3

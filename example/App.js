@@ -50,7 +50,7 @@ var App = React.createClass({
       <div className="App">
         <div className="App-chrome" ref="chrome" />
         <div className="App-chart" ref="chart">
-            <Zippage data={this.state.data} zipConfig={weeklyConfig(this.state.data)} />
+            <Zippage data={this.state.data} zipConfig={dailyConfig(this.state.data)} />
         </div>
       </div>
       );
