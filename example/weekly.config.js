@@ -22,25 +22,32 @@ var intervalColors = {
 
 var diabetes = require('../diabetes/');
 var CBGCircle = diabetes.plot.CBGCircle;
-var CBGLine = diabetes.plot.CBGLine;
-var CBGMarker = function(selection) {
-  selection.insert('defs', 'g')
-    .append('marker')
-    .attr({
-      id: 'CBG-lineMarker',
-      markerWidth: 2,
-      markerHeight: 2,
-      refX: 1,
-      refY: 1
-    })
-    .append('circle')
-    .attr({
-      cx: 1,
-      cy: 1,
-      r: 1,
-      stroke: 'none',
-      fill: 'white'
-    });
+// var CBGLine = diabetes.plot.CBGLine;
+// var CBGMarker = function(selection) {
+//   selection.insert('defs', 'g')
+//     .append('marker')
+//     .attr({
+//       id: 'CBG-lineMarker',
+//       markerWidth: 2,
+//       markerHeight: 2,
+//       refX: 1,
+//       refY: 1
+//     })
+//     .append('circle')
+//     .attr({
+//       cx: 1,
+//       cy: 1,
+//       r: 1,
+//       stroke: 'none',
+//       fill: 'white'
+//     });
+// };
+var SMBGCircle = diabetes.plot.SMBGCircle;
+var bgColors = diabetes.util.colors.bg;
+var bgFillColor = convert(bgColors.fill);
+var bgSizes = {
+  cbg: 2.5,
+  smbg: 6
 };
 
 var bgCategories = {
@@ -63,7 +70,13 @@ var dayIntervals = function(bounds) {
 var daysInView = 7, bgSize = 1;
 
 module.exports = function(data) {
-  var dataService = new BasicFilter(data);
+  var grouped = _.groupBy(data, function(d) { return d.type; });
+  var dataServices = {};
+  var types = Object.keys(grouped);
+  for (var i = 0; i < types.length; ++i) {
+    var type = types[i];
+    dataServices[type] = new BasicFilter(grouped[type]);
+  }
   var now = moment(), timezone = 'US/Pacific';
   return {
     opts: {
@@ -110,25 +123,39 @@ module.exports = function(data) {
             },
             id: function(day) { return 'ClipPath-=-' + day; }
           },{
-            chart: CBGLine,
+            chart: CBGCircle,
             data: function(bounds) {
-              return dataService.filter([
+              return dataServices.cbg.filter([
                 bounds[0].toISOString(),
                 bounds[1].toISOString()
               ]);
             },
-            id: function(day) { return 'CBGLine-=-' + day; },
+            id: function(day) { return 'CBGCircles-=-' + day; },
             opts: {
               bgCategories: bgCategories,
-              bgFillColor: 'white',
-              r: 2.5
+              bgFillColor: bgFillColor,
+              r: bgSizes.cbg
+            }
+          }, {
+            chart: SMBGCircle,
+            data: function(bounds) {
+              return dataServices.smbg.filter([
+                bounds[0].toISOString(),
+                bounds[1].toISOString()
+              ]);
+            },
+            id: function(day) { return 'SMBGCircles-=-' + day; },
+            opts: {
+              bgCategories: bgCategories,
+              bgFillColor: bgFillColor,
+              r: bgSizes.smbg
             }
           }]
         },
         daysInView: daysInView,
         labelFormat: function(d) { return moment(d).format('ddd, MMM Do'); },
         labelGutter: 120,
-        marker: CBGMarker
+        // marker: CBGMarker
       },
       weight: 1
     }]
