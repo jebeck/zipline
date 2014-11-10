@@ -23,6 +23,7 @@ var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBGCircleReuse;
 
 var bgColors = diabetes.util.colors.bg;
+var bgFillColor = convert(bgColors.fill);
 var bgIntervalColors = {
   low: {
     start: convert(bgColors.low.basic),
@@ -94,7 +95,7 @@ module.exports = function(data) {
         id: 'CBG',
         opts: {
           bgCategories: bgCategories,
-          bgFillColor: 'white',
+          bgFillColor: bgFillColor,
           r: bgSize
         }
       }],

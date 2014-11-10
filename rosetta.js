@@ -3,14 +3,14 @@
 var rosetta = require('rosetta');
 
 try {
-  var zipline = rosetta.compile(['src/rosetta/rising-tide.rose'], {
+  var zipline = rosetta.compile(['src/rosetta/salt-cure.rose'], {
     jsFormat: 'commonjs',
     cssFormat: 'less',
     jsOut: 'src/util/colors.js',
     cssOut: 'src/less/colors.less'
   });
   rosetta.writeFiles(zipline);
-  var diabetes = rosetta.compile(['diabetes/rosetta/colors.rose'], {
+  var diabetes = rosetta.compile(['diabetes/rosetta/salt-cure.rose'], {
     jsFormat: 'commonjs',
     cssFormat: 'less',
     jsOut: 'diabetes/util/colors.js',
