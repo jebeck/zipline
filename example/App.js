@@ -24,6 +24,7 @@ var App = React.createClass({
   },
 
   fetchData: function() {
+    console.time('Loading Data');
     d3.json(this.state.dataUrl, function(err, data) {
       if (err) {
         throw new Error('Could not fetch data!');
@@ -41,6 +42,7 @@ var App = React.createClass({
     if (this.state.loading) {
       return this.renderNoData();
     }
+    console.timeEnd('Loading Data');
     return this.renderData();
   },
 

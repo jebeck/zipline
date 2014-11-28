@@ -9,3 +9,7 @@ bg:
   high:
     $basic = #DA7905
     $lighter = #E09B48
+
+axes:
+  $fill = #FFFFFF
+  $background = #0F1340

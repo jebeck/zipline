@@ -32,6 +32,12 @@ d3.chart('SMBGCircleReuse', {
           .attr({
             r: opts.r,
             'class': 'SMBG-circle'
+          })
+          .on('mouseover', function(d) {
+            chart.emitter().emit('focusSMBG', d);
+          })
+          .on('mouseout', function(d) {
+            chart.emitter().emit('unfocusSMBG');
           });
       },
       events: {
@@ -62,6 +68,11 @@ d3.chart('SMBGCircleReuse', {
     this._bgFillScale = scales.bgFill(bgCategories);
     return this;
   },
+  emitter: function(emitter) {
+    if (!arguments.length) { return this._emitter; }
+    this._emitter = emitter;
+    return this;
+  },
   height: function(height) {
     if (!arguments.length) { return this._height; }
     this._height = height;
@@ -90,7 +101,7 @@ d3.chart('SMBGCircleReuse', {
   },
   yScale: function(height) {
     if (!arguments.length) { return this._yScale; }
-    this._yScale = scales.bg(height, this.opts().r*2);
+    this._yScale = scales.bg(height, this.opts().scaleR*2);
     return this;
   }
 });
@@ -110,6 +121,7 @@ module.exports = function() {
       _.defaults(opts, defaults);
 
       chart = el.chart('SMBGCircleReuse')
+        .emitter(opts.emitter)
         .opts(opts.opts)
         .height(opts.height)
         .width(opts.width)
