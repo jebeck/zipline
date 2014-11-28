@@ -27,6 +27,7 @@ d3.chart('Zipline', {
         chart.slices.push(slice);
         _.each(d.plot, function(p) {
           var sliver = p.chart().create(el, {
+            emitter: chart.emitter(),
             height: adjusted.height,
             majorScale: chart.scale(),
             opts: p.opts,
@@ -102,6 +103,11 @@ d3.chart('Zipline', {
 
     return this;
   },
+  emitter: function(emitter) {
+    if (!arguments.length) { return this._emitter; }
+    this._emitter = emitter;
+    return this;
+  },
   height: function(height) {
     if (!arguments.length) { return this._height; }
     this._height = height;
@@ -174,6 +180,7 @@ module.exports = function() {
 
       chart = d3.select(el)
         .chart('Zipline')
+        .emitter(emitter)
         .height(dims.height)
         .location(opts.location)
         .scale(dims.scale)
@@ -195,6 +202,7 @@ module.exports = function() {
           center: d3.time.hour.utc.offset(newDate, 12)
         });
         emitter.emit('navigatedToCenter', chart.location().center.toISOString());
+        emitter.emit('leftEdge', dims.scale(chart.location().bounds[0]));
 
         _.each(chart.slices, function(slice) {
           if (!slice.once) {

@@ -22,6 +22,7 @@ var diabetes = require('../diabetes/');
 var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBGCircleReuse;
 var SMBG = diabetes.plot.SMBGCircleReuse;
+var BGAxis = diabetes.plot.axes.BGAxis;
 
 var bgColors = diabetes.util.colors.bg;
 var bgFillColor = convert(bgColors.fill);
@@ -55,6 +56,8 @@ var bgCategories = {
   low: 65,
   high: 140
 };
+
+var bgValuesForAxis = [65,140,180,240,300];
 
 module.exports = function(data) {
   var grouped = _.groupBy(data, function(d) { return d.type; });
@@ -92,7 +95,7 @@ module.exports = function(data) {
           target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
           high: scales.hourcolorscale(bgIntervalColors.high.start, bgIntervalColors.high.end)
         },
-        r: bgSizes.cbg
+        scaleR: bgSizes.smbg
       },
       plot: [{
         chart: CBG,
@@ -106,7 +109,8 @@ module.exports = function(data) {
         opts: {
           bgCategories: bgCategories,
           bgFillColor: bgFillColor,
-          r: bgSizes.cbg
+          r: bgSizes.cbg,
+          scaleR: bgSizes.smbg
         }
       }, {
         chart: SMBG,
@@ -120,7 +124,16 @@ module.exports = function(data) {
         opts: {
           bgCategories: bgCategories,
           bgFillColor: bgFillColor,
-          r: bgSizes.smbg
+          r: bgSizes.smbg,
+          scaleR: bgSizes.smbg
+        }
+      }, {
+        chart: BGAxis,
+        data: function() { return bgValuesForAxis; },
+        id: 'BGAxis',
+        opts: {
+          tickLength: 7,
+          scaleR: bgSizes.smbg
         }
       }],
       weight: 3

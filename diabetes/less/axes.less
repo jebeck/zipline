@@ -1,0 +1,23 @@
+@import url('colors.less');
+
+.BGAxis-background {
+  rect {
+    fill: @axes-background;
+    opacity: 0.5;
+  }
+}
+
+.BGAxis-ticklines {
+  line {
+    stroke: @axes-fill;
+    stroke-width: 2.5px;
+    opacity: 0.75;
+  }
+}
+
+.BGAxis-text {
+  text {
+    dominant-baseline: central;
+    fill: @axes-fill;
+  }
+}

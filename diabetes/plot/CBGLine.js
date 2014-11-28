@@ -83,7 +83,7 @@ d3.chart('CBGLine', {
   },
   yScale: function(height) {
     if (!arguments.length) { return this._yScale; }
-    this._yScale = scales.bg(height, this.opts().r*2);
+    this._yScale = scales.bg(height, this.opts().scaleR*2);
     return this;
   }
 });
