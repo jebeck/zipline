@@ -48,7 +48,7 @@ d3.chart('SMBGCircleReuse', {
           this.attr({
             fill: opts.bgFillColor ? opts.bgFillColor : bgFill,
             cx: function(d) {
-              return xScale(new Date(d.trueUtcTime));
+              return xScale(new Date(d.offsetTime));
             },
             cy: function(d) {
               return yScale(d.value);

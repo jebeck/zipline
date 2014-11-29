@@ -34,7 +34,7 @@ d3.chart('SMBGCircle', {
 
           this.attr({
             cx: function(d) {
-              return xScale(new Date(d.trueUtcTime));
+              return xScale(new Date(d.offsetTime));
             },
             cy: function(d) {
               return yScale(d.value);

@@ -8,7 +8,7 @@ d3.chart('CBGLine', {
 
     var cbgLine = function(xScale, yScale) {
       return d3.svg.line()
-        .x(function(d) { return xScale(new Date(d.trueUtcTime)); })
+        .x(function(d) { return xScale(new Date(d.offsetTime)); })
         .y(function(d) { return yScale(d.value); })
         .interpolate('linear');
     };

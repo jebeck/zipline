@@ -126,8 +126,8 @@ module.exports = function(data) {
             chart: CBGCircle,
             data: function(bounds) {
               return dataServices.cbg.filter([
-                bounds[0].toISOString(),
-                bounds[1].toISOString()
+                bounds[0],
+                bounds[1]
               ]);
             },
             id: function(day) { return 'CBGCircles-=-' + day; },
@@ -140,8 +140,8 @@ module.exports = function(data) {
             chart: SMBGCircle,
             data: function(bounds) {
               return dataServices.smbg.filter([
-                bounds[0].toISOString(),
-                bounds[1].toISOString()
+                bounds[0],
+                bounds[1]
               ]);
             },
             id: function(day) { return 'SMBGCircles-=-' + day; },
