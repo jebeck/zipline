@@ -134,7 +134,8 @@ module.exports = function(data) {
             opts: {
               bgCategories: bgCategories,
               bgFillColor: bgFillColor,
-              r: bgSizes.cbg
+              r: bgSizes.cbg,
+              scaleR: bgSizes.smbg
             }
           }, {
             chart: SMBGCircle,
@@ -148,7 +149,8 @@ module.exports = function(data) {
             opts: {
               bgCategories: bgCategories,
               bgFillColor: bgFillColor,
-              r: bgSizes.smbg
+              r: bgSizes.smbg,
+              scaleR: bgSizes.smbg
             }
           }]
         },
