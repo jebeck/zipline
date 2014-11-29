@@ -5,7 +5,7 @@ var d3 = window.d3;
 
 var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
-var BasicFilter = zipline.dataservices.BasicFilter;
+var Filter = zipline.dataservices.DateTriggerFilter;
 var Label = zipline.components.horizontal.Label;
 var TimeLabels = zipline.components.horizontal.TimeLabels;
 
@@ -68,7 +68,7 @@ module.exports = function(data) {
   var types = Object.keys(grouped);
   for (var i = 0; i < types.length; ++i) {
     var type = types[i];
-    dataServices[type] = new BasicFilter(grouped[type]);
+    dataServices[type] = new Filter(grouped[type]);
   }
   return {
     slices: [{
