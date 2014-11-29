@@ -10,6 +10,13 @@ try {
     cssOut: 'src/less/colors.less'
   });
   rosetta.writeFiles(zipline);
+  var activity = rosetta.compile(['activity/rosetta/salt-cure.rose'], {
+    jsFormat: 'commonjs',
+    cssFormat: 'less',
+    jsOut: 'activity/util/colors.js',
+    cssOut: 'activity/less/colors.less'
+  });
+  rosetta.writeFiles(activity);
   var diabetes = rosetta.compile(['diabetes/rosetta/salt-cure.rose'], {
     jsFormat: 'commonjs',
     cssFormat: 'less',

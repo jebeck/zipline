@@ -18,6 +18,9 @@ var intervalColors = {
   end: convert(colors.interval.end)
 }; 
 
+var activity = require('../activity/');
+var Moves = activity.plot.MovesDailyStoryline;
+
 var diabetes = require('../diabetes/');
 var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBGCircleReuse;
@@ -79,6 +82,22 @@ module.exports = function(data) {
       opts: {
         fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
       },
+      plot: [{
+        chart: Moves,
+        data: function(bounds) {
+          return dataServices.moves.filter([
+            d3.time.day.utc.offset(bounds[0], -1),
+            d3.time.day.utc.offset(bounds[1], 1)
+          ]);
+        },
+        id: 'Moves',
+        opts: {
+          pad: {
+            top: 10,
+            bottom: 10
+          }
+        }
+      }],
       weight: 2
     }, {
       id: 'BG',
