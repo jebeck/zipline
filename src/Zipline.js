@@ -208,7 +208,9 @@ module.exports = function() {
           if (!slice.once) {
             var bounds = chart.location().bounds;
             var data = slice.data(bounds);
-            slice.render(slice.data(bounds));
+            if (data !== null) {
+              slice.render(data);
+            }
           }
         });
       });

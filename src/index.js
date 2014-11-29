@@ -23,7 +23,8 @@ var zipline = {
     }
   },
   dataservices: {
-    BasicFilter: require('./dataservices/BasicFilter')
+    BasicFilter: require('./dataservices/BasicFilter'),
+    DateTriggerFilter: require('./dataservices/DateTriggerFilter')
   },
   util: {
     colors: require('./util/colors'),
