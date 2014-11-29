@@ -101,8 +101,8 @@ module.exports = function(data) {
         chart: CBG,
         data: function(bounds) {
           return dataServices.cbg.filter([
-            d3.time.day.utc.offset(bounds[0], -1).toISOString(),
-            d3.time.day.utc.offset(bounds[1], 1).toISOString()
+            d3.time.day.utc.offset(bounds[0], -1),
+            d3.time.day.utc.offset(bounds[1], 1)
           ]);
         },
         id: 'CBG',
@@ -116,8 +116,8 @@ module.exports = function(data) {
         chart: SMBG,
         data: function(bounds) {
           return dataServices.smbg.filter([
-            d3.time.day.utc.offset(bounds[0], -1).toISOString(),
-            d3.time.day.utc.offset(bounds[1], 1).toISOString()
+            d3.time.day.utc.offset(bounds[0], -1),
+            d3.time.day.utc.offset(bounds[1], 1)
           ]);
         },
         id: 'SMBG',

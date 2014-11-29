@@ -13,8 +13,20 @@ d3.chart('BGBackground', {
 
     var xPosition = function(d) { return chart.xScale()(d); };
     var rectWidth = function(d) {
-      var xScale = chart.xScale(), step = chart.step();
-      return xScale(d3.time.hour.utc.offset(d, step)) - xScale(d);
+      var xScale = chart.xScale(), step = chart.step(), timezone = chart.timezone();
+      var next = d3.time.hour.utc.offset(d, step);
+      var nextHours = moment.utc(next).tz(timezone).hours();
+      while (nextHours % step !== 0) {
+        if (nextHours > step) {
+          next = d3.time.hour.utc.offset(d, (step - 1));
+          nextHours = moment.utc(next).tz(timezone).hours();
+        }
+        else if (nextHours < step) {
+          next = d3.time.hour.utc.offset(d, (step + 1));
+          nextHours = moment.utc(next).tz(timezone).hours();
+        }
+      }
+      return xScale(next) - xScale(d);
     };
 
     this.layer('Background-rects--low', this.base.append('g').attr({
