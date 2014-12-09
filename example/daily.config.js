@@ -5,7 +5,7 @@ var d3 = window.d3;
 
 var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
-var Filter = zipline.dataservices.DateTriggerFilter;
+var Filter = zipline.dataservices.NoFilter;
 var Label = zipline.components.horizontal.Label;
 var TimeLabels = zipline.components.horizontal.TimeLabels;
 
@@ -72,34 +72,6 @@ module.exports = function(data) {
   }
   return {
     slices: [{
-      id: 'Activity',
-      background: Background,
-      data: oneHourIntervals,
-      label: {
-        component: Label,
-        text: 'Activity'
-      },
-      opts: {
-        fillScale: scales.hourcolorscale(intervalColors.start, intervalColors.end)
-      },
-      plot: [{
-        chart: Moves,
-        data: function(bounds, force) {
-          return dataServices.moves.filter([
-            d3.time.day.utc.offset(bounds[0], -1),
-            d3.time.day.utc.offset(bounds[1], 1)
-          ], force);
-        },
-        id: 'Moves',
-        opts: {
-          pad: {
-            top: 10,
-            bottom: 10
-          }
-        }
-      }],
-      weight: 2
-    }, {
       id: 'BG',
       background: BGBackground,
       data: oneHourIntervals,

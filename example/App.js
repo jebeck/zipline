@@ -50,7 +50,6 @@ var App = React.createClass({
     /* jshint ignore:start */
     return (
       <div className="App">
-        <div className="App-chrome" ref="chrome" />
         <div className="App-chart" ref="chart">
             <Zippage data={this.state.data} zipConfig={dailyConfig(this.state.data)} />
         </div>
@@ -63,7 +62,6 @@ var App = React.createClass({
     /* jshint ignore:start */
     return (
       <div className="App">
-        <div className="App-chrome" ref="chrome" />
         <div className="App-loadingMessage" ref="loading">
             <p>Loading data...</p>
         </div>
