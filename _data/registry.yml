@@ -1,9 +1,16 @@
 [
   {
+    "title": "NoFilter",
     "href": "example/no-filter.html",
-    "desc": "Render ALL the data! Instead of filtering on scroll and rendering on demand, just render everything at the beginning.",
-    "bundle": "no-filter.js",
     "branch": "no-filter",
-    "title": "NoFilter"
+    "bundle": "no-filter.js",
+    "desc": "Render ALL the data! Instead of filtering on scroll and rendering on demand, just render everything at the beginning."
+  },
+  {
+    "href": "example/basic-filter.html",
+    "desc": "Slightly smarter than a box of hair data rendering on demand; filter on scroll with crossfilter.",
+    "bundle": "basic-filter.js",
+    "branch": "basic-filter",
+    "title": "BasicFilter"
   }
 ]
