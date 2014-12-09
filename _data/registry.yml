@@ -7,10 +7,24 @@
     "desc": "Render ALL the data! Instead of filtering on scroll and rendering on demand, just render everything at the beginning."
   },
   {
-    "href": "example/basic-filter.html",
     "desc": "Slightly smarter than a box of hair data rendering on demand; filter on scroll with crossfilter.",
+    "href": "example/basic-filter.html",
     "bundle": "basic-filter.js",
     "branch": "basic-filter",
     "title": "BasicFilter"
+  },
+  {
+    "title": "DateTriggerFilter, no reuse",
+    "href": "example/date-trigger-filter-no-reuse.html",
+    "branch": "date-trigger-filter-no-reuse",
+    "bundle": "date-trigger-filter-no-reuse.js",
+    "desc": "Rendering on demand by smart filtering only when scroll crosses a day boundary, but no reusing nodes."
+  },
+  {
+    "href": "example/date-trigger-filter-with-reuse.html",
+    "desc": "Rendering on demand by smart filtering only when scroll crosses a day boundary; *plus* reusing exit nodes as enter nodes.",
+    "bundle": "date-trigger-filter-with-reuse.js",
+    "branch": "date-trigger-filter-with-reuse",
+    "title": "DateTriggerFilter, with reuse"
   }
 ]
