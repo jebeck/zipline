@@ -15,9 +15,9 @@ var DateTriggerFilter = function(data) {
     return center.toISOString().slice(0,10);
   };
 
-  this.filter = function(bounds) {
+  this.filter = function(bounds, force) {
     var center = centerOfBounds(bounds);
-    if (center !== lastDate) {
+    if (center !== lastDate || force) {
       lastDate = center;
       return dataByDatetime.filter(bounds).top(Infinity);
     }
