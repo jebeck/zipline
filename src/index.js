@@ -24,7 +24,8 @@ var zipline = {
   },
   dataservices: {
     BasicFilter: require('./dataservices/BasicFilter'),
-    DateTriggerFilter: require('./dataservices/DateTriggerFilter')
+    DateTriggerFilter: require('./dataservices/DateTriggerFilter'),
+    NoFilter: require('./dataservices/NoFilter')
   },
   util: {
     colors: require('./util/colors'),
