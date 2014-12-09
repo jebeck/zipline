@@ -20,10 +20,15 @@ var Timeline = React.createClass({
     var opts = zipConfig.opts || {};
     var zipline = Zipline().create(zipNode, this.props.timezone, opts);
     zipline.render(zipConfig.slices).relocate();
-    d3.select(window).on('resize', function() {
+    function redraw() {
       zipline.clear();
       var dims = zipline.getDimensions(zipNode, opts.scroll === 'horizontal', opts.timespan);
       zipline.resize(dims).render(zipConfig.slices).relocate();
+    }
+    var doRedraw;
+    d3.select(window).on('resize', function() {
+      clearTimeout(doRedraw);
+      doRedraw = setTimeout(redraw, 500);
     });
     this.chart = zipline;
     this.bindEvents();

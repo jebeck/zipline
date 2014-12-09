@@ -14,7 +14,7 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       chartType: 'daily',
-      dataUrl: '../data/2014.json',
+      dataUrl: 'data/2014.json',
       loading: true
     };
   },

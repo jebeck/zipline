@@ -84,11 +84,11 @@ module.exports = function(data) {
       },
       plot: [{
         chart: Moves,
-        data: function(bounds) {
+        data: function(bounds, force) {
           return dataServices.moves.filter([
             d3.time.day.utc.offset(bounds[0], -1),
             d3.time.day.utc.offset(bounds[1], 1)
-          ]);
+          ], force);
         },
         id: 'Moves',
         opts: {
@@ -118,11 +118,11 @@ module.exports = function(data) {
       },
       plot: [{
         chart: CBG,
-        data: function(bounds) {
+        data: function(bounds, force) {
           return dataServices.cbg.filter([
             d3.time.day.utc.offset(bounds[0], -1),
             d3.time.day.utc.offset(bounds[1], 1)
-          ]);
+          ], force);
         },
         id: 'CBG',
         opts: {
@@ -133,11 +133,11 @@ module.exports = function(data) {
         }
       }, {
         chart: SMBG,
-        data: function(bounds) {
+        data: function(bounds, force) {
           return dataServices.smbg.filter([
             d3.time.day.utc.offset(bounds[0], -1),
             d3.time.day.utc.offset(bounds[1], 1)
-          ]);
+          ], force);
         },
         id: 'SMBG',
         opts: {

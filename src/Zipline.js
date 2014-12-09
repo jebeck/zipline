@@ -100,6 +100,7 @@ d3.chart('Zipline', {
   },
   clear: function() {
     this.base.selectAll('svg').remove();
+    this.emitter().removeAllListeners();
 
     return this;
   },
@@ -244,7 +245,10 @@ module.exports = function() {
       // initial draw
       timer.start('Initial Draw');
       _.each(chart.slices, function(slice) {
-        slice.render(slice.data(bounds));
+        var data = slice.data(bounds, true);
+        if (data !== null) {
+          slice.render(data);
+        }
       });
       timer.end('Initial Draw');
 
