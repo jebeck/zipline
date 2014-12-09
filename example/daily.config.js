@@ -5,7 +5,7 @@ var d3 = window.d3;
 
 var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
-var Filter = zipline.dataservices.NoFilter;
+var Filter = zipline.dataservices.DateTriggerFilter;
 var Label = zipline.components.horizontal.Label;
 var TimeLabels = zipline.components.horizontal.TimeLabels;
 
