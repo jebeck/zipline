@@ -1,0 +1,2 @@
+baseurl: /zipline
+exclude: ['Gemfile', 'Gemfile.lock', 'jekyll', 'license.txt', 'README.md']

@@ -1,0 +1,9 @@
+[
+  {
+    "href": "example/no-filter.html",
+    "desc": "Render ALL the data! Instead of filtering on scroll and rendering on demand, just render everything at the beginning.",
+    "bundle": "no-filter.js",
+    "branch": "no-filter",
+    "title": "NoFilter"
+  }
+]

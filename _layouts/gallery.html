@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>
+            Zipline Gallery
+        </title>
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <style type="text/css">
+            #main {
+                padding: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main" class="container-fluid">
+            <div class="jumbotron" id="gallery">
+                <div class="page-header">
+                    <h1>
+                        Gallery
+                        {% if site.data.registry == empty %}
+                            <small>is empty right now... :(</small>
+                        {% endif %}
+                    </h1>
+                </div>
+            </div>
+            {% if site.data.registry != empty %}
+                {% for item in site.data.registry %}
+                <div class="row gallery-item">
+                    <h2 class="col-md-offset-1"></h2>
+                    <div class="col-md-8 col-md-offset-2">
+                        <dl>
+                            <dt>
+                                <a class="lead" href="{{item.href}}" target="_blank">
+                                 {{item.title}}
+                             </a>
+                         </dt>
+                         <dd>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <p>
+                                        {{item.desc}}
+                                    </p>
+                                </li>
+                            </ul>
+                        </dd>
+                    </dl>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </body>
+</html>
