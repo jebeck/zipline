@@ -36,10 +36,6 @@ d3.chart('BGBackground', {
         return reuse(this.selectAll('rect').data(data, function(d) {
           return d;
         }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('rect').data(data, function(d) {
-        //   return d;
-        // });
       },
       insert: function() {
         var height = chart.height();

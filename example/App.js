@@ -5,7 +5,6 @@ var d3 = require('d3');
 
 var zipline = require('../src');
 var Zippage = zipline.Zippage;
-var BasicFilter = zipline.dataservices.BasicFilter;
 
 var dailyConfig = require('./daily.config');
 var weeklyConfig = require('./weekly.config');

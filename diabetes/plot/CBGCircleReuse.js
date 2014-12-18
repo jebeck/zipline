@@ -20,10 +20,6 @@ d3.chart('CBGCircleReuse', {
         return reuse(this.selectAll('circle').data(data, function(d) {
           return d.id;
         }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('circle').data(data, function(d) {
-        //   return d.id;
-        // });
       },
       insert: function() {
         var opts = chart.opts();
