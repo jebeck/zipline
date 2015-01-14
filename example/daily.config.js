@@ -1,5 +1,6 @@
 /** @jsx React.DOM */
 var React = require('react');
+var moment = require('moment-timezone');
 
 var d3 = window.d3;
 
@@ -70,7 +71,26 @@ module.exports = function(data) {
     var type = types[i];
     dataServices[type] = new Filter(grouped[type]);
   }
+  var first = data[data.length -1], last = data[0];
   return {
+    opts: {
+      timespan: {
+        first: [
+          moment(last.trueUtcTime).tz(last.timezone).startOf('year').toDate(),
+          moment(last.trueUtcTime).tz(last.timezone).startOf('year').add(1, 'days').toDate()
+        ],
+        total: [
+          moment(last.trueUtcTime).tz(last.timezone).startOf('year').toDate(),
+          moment(last.trueUtcTime).tz(last.timezone).endOf('year').toDate()
+        ]
+      },
+      location: {
+        bounds: [
+          moment(last.trueUtcTime).tz(last.timezone).subtract(1, 'days').toDate(),
+          moment(last.trueUtcTime).tz(last.timezone).toDate()
+        ]
+      }
+    },
     slices: [{
       id: 'Activity',
       background: Background,
