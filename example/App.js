@@ -7,7 +7,6 @@ var zipline = require('../src');
 var Zippage = zipline.Zippage;
 
 var dailyConfig = require('./daily.config');
-var weeklyConfig = require('./weekly.config');
 
 var App = React.createClass({
   getInitialState: function() {

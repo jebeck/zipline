@@ -15,11 +15,6 @@ var zipline = {
       Details: require('./components/page/Details'),
       Picker: require('./components/page/Picker'),
       Timeline: require('./components/page/Timeline')
-    },
-    vertical: {
-      ClipPath: require('./components/vertical/ClipPath'),
-      StackedDayBackground: require('./components/vertical/StackedDayBackground'),
-      StackedGroups: require('./components/vertical/StackedGroups')
     }
   },
   dataservices: {

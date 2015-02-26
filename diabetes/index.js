@@ -8,9 +8,6 @@ var diabetes = {
     },
     BGBackground: require('./plot/BGBackground'),
     CBGCircleReuse: require('./plot/CBGCircleReuse'),
-    CBGCircle: require('./plot/CBGCircle'),
-    CBGLine: require('./plot/CBGLine'),
-    SMBGCircle: require('./plot/SMBGCircle'),
     SMBGCircleReuse: require('./plot/SMBGCircleReuse')
   },
   util: {

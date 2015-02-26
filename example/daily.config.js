@@ -8,7 +8,6 @@ var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
 var Filter = zipline.dataservices.DateTriggerFilter;
 var Label = zipline.components.horizontal.Label;
-var TimeLabels = zipline.components.horizontal.TimeLabels;
 
 var scales = zipline.util.scales;
 
