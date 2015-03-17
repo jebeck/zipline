@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
-var bows = require('bows');
 var React = require('react/addons');
-var cx = React.addons.classSet;
+
+var bows = require('bows');
+var cx = require('classnames');
 var Immutable = require('immutable');
 
 var Label = require('../horizontal/Label');
