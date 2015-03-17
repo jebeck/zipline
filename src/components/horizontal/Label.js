@@ -16,7 +16,6 @@ var Label = React.createClass({
       'Label--regular': !this.props.large,
       'Label--large': this.props.large
     });
-    /* jshint ignore:start */
     return (
       <div className={labelClass} id={this.props.id}>
         <h3>
@@ -24,7 +23,6 @@ var Label = React.createClass({
         </h3>
       </div>
     );
-    /* jshint ignore:end */
   }
 });
 

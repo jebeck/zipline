@@ -60,7 +60,6 @@ var Zippage = React.createClass({
 
     var bottomRow = this.renderBottomRow();
 
-    /* jshint ignore:start */
     return (
       <div className="Zippage" ref="zippage">
         <div className={timelineRowClass}>
@@ -70,7 +69,6 @@ var Zippage = React.createClass({
         {bottomRow}
       </div>
     );
-    /* jshint ignore:end */
   },
   renderBottomRow: function() {
     if (!this.props.dashboard) {
@@ -84,46 +82,37 @@ var Zippage = React.createClass({
       'Zippage-row': true,
       'Zippage-row--bottom': this.props.dashboard
     });
-    /* jshint ignore:start */
     return (
       <div className={bottomRowClass}>
         {picker}
         {dashboard}
       </div>
     );
-    /* jshint ignore:end */
   },
   renderDashboard: function() {
-    /* jshint ignore:start */
     return (
       <Dashboard alone={this.isAlone()} />
     );
-    /* jshint ignore:end */
   },
   renderDetails: function() {
-    /* jshint ignore:start */
     return (
       <Details />
     );
-    /* jshint ignore:end */
   },
   renderPicker: function() {
     // rendering a picker without a dashboard is not supported
     if (!this.props.dashboard) {
       return null;
     }
-    /* jshint ignore:start */
     return (
       <Picker
         empty={!this.props.picker} />
     );
-    /* jshint ignore:end */
   },
   renderTimeline: function() {
     if (!this.readyToDraw()) {
       return null;
     }
-    /* jshint ignore:start */
     return (
       <Timeline
         dashboard={this.props.dashboard}
@@ -133,7 +122,6 @@ var Zippage = React.createClass({
         dataBySlice={this.state.dataBySlice}
         edgeLocation={this.state.initialViewBounds[0]} />
     );
-    /* jshint ignore:end */
   },
   getPlotTypes: function() {
     var slices = this.props.baseConfig.slices;

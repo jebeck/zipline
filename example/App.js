@@ -48,7 +48,6 @@ var App = React.createClass({
   },
 
   renderData: function() {
-    /* jshint ignore:start */
     return (
       <div className="App">
         <div className="App-chrome" ref="chrome" />
@@ -59,11 +58,9 @@ var App = React.createClass({
         </div>
       </div>
       );
-    /* jshint ignore:end */
   },
 
   renderNoData: function() {
-    /* jshint ignore:start */
     return (
       <div className="App">
         <div className="App-chrome" ref="chrome" />
@@ -72,7 +69,6 @@ var App = React.createClass({
         </div>
       </div>
       );
-    /* jshint ignore:end */
   }
 });
 

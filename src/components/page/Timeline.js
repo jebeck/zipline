@@ -59,7 +59,6 @@ var Timeline = React.createClass({
     var label = this.renderLabel();
 
     var slices = this.renderSlices();
-    /* jshint ignore:start */
     return (
       <div className={timelineClass}>
         <div className="Chrome"></div>
@@ -67,7 +66,6 @@ var Timeline = React.createClass({
         <div className={ziplineClass} ref="zipline">{slices}</div>
       </div>
     );
-    /* jshint ignore:end */
   },
   renderLabel: function() {
     var label = this.props.createConfig.get('label') || null;
@@ -76,11 +74,9 @@ var Timeline = React.createClass({
     }
 
     var Label = label.get('component');
-    /* jshint ignore:start */
     return (
       <Label fixed={false} large={!this.props.dashboard} text={label.get('text')} id={'ZiplineLabel'}/>
     );
-    /* jshint ignore:end */
   },
   renderSlices: function() {
     var self = this;
@@ -88,11 +84,9 @@ var Timeline = React.createClass({
     var slices = this.props.drawConfig;
     var components = [];
     slices.forEach(function(slice) {
-      /* jshint ignore:start */
       components.push(
         <Slice dashboard={self.props.dashboard} slice={slice} key={slice.get('id')} />
       );
-      /* jshint ignore:end */
     });
     return components;
   }

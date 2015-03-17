@@ -17,21 +17,17 @@ var Slice = React.createClass({
       'Slice--triple': slice.get('weight') === 3
     });
     label = slice.get('label') ? this.renderLabel(slice.get('label')) : null;
-    /* jshint ignore:start */
     return (
       <div className={sliceClass} ref={this.props.slice.get('id')}>
         {label || null}
       </div>
     );
-    /* jshint ignore:end */
   },
   renderLabel: function(label) {
     var Label = label.get('component');
-    /* jshint ignore:start */
     return (
       <Label fixed={true} large={!this.props.dashboard} text={label.get('text')} id={this.props.slice.get('id') + 'Label'} />
     );
-    /* jshint ignore:end */
   },
 });
 

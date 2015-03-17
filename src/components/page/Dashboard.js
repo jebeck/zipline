@@ -12,11 +12,9 @@ var Dashboard = React.createClass({
       'FlexItem-dashboard': true,
       'FlexItem-dashboard--alone': this.props.alone
     });
-    /* jshint ignore:start */
     return (
       <div className={dashboardClass} ref="dashboard" />
     );
-    /* jshint ignore:end */
   }
 });
 
