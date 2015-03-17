@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react');
 
+var bows = require('bows');
 var d3 = require('d3');
 
 var zipline = require('../src');
@@ -8,11 +9,13 @@ var Zippage = zipline.Zippage;
 
 var dailyConfig = require('./daily.config');
 
+var debug = bows('App');
+
 var App = React.createClass({
   getInitialState: function() {
     return {
       chartType: 'daily',
-      dataUrl: 'data/2014.json',
+      dataUrl: 'data/2015.json',
       loading: true
     };
   },
@@ -50,7 +53,9 @@ var App = React.createClass({
       <div className="App">
         <div className="App-chrome" ref="chrome" />
         <div className="App-chart" ref="chart">
-            <Zippage data={this.state.data} zipConfig={dailyConfig(this.state.data)} />
+            <Zippage
+              allData={this.state.data}
+              baseConfig={dailyConfig} />
         </div>
       </div>
       );

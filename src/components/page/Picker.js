@@ -3,8 +3,7 @@ var React = require('react');
 
 var Picker = React.createClass({
   propTypes: {
-    empty: React.PropTypes.bool.isRequired,
-    monthYear: React.PropTypes.string.isRequired
+    empty: React.PropTypes.bool.isRequired
   },
   render: function() {
     var pickerClass = 'FlexItem FlexItem-picker';

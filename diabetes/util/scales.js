@@ -5,10 +5,12 @@ var convert = zipline.util.rgbtohex;
 
 var colors = require('./colors');
 
+var GLUCOSE_CONVERSION = 18.01559;
+
 module.exports = {
   bg: function(height, pad) {
     return d3.scale.linear()
-      .domain([0, 401])
+      .domain([19/GLUCOSE_CONVERSION, 401/GLUCOSE_CONVERSION])
       .range([height - pad, pad])
       .clamp(true);
   },

@@ -1,6 +1,5 @@
 var _ = require('lodash');
 var d3 = window.d3;
-var moment = require('moment-timezone');
 
 var reuse = require('../../util/reusenodes');
 
@@ -13,12 +12,8 @@ d3.chart('Background', {
     }), {
       dataBind: function(data) {
         return reuse(this.selectAll('rect').data(data, function(d) {
-          return d;
+          return d.time;
         }));
-        // commented out = vanilla enter selection, without reusing nodes
-        // return this.selectAll('rect').data(data, function(d) {
-        //   return d;
-        // });
       },
       insert: function() {
         var h = chart.height();
@@ -31,30 +26,15 @@ d3.chart('Background', {
       },
       events: {
         merge: function() {
-          var xScale = chart.xScale();
-          var step = chart.step();
-          var opts = chart.opts(), timezone = chart.timezone();
+          var xScale = chart.xScale(), opts = chart.opts();
           this.attr({
             fill: function(d) {
-              return opts.fillScale(Math.abs(12 - moment(d).tz(timezone).hour()));
+              return opts.fillScale(Math.abs(12 - d.localHour));
             },
             width: function(d) {
-              var xScale = chart.xScale(), step = chart.step(), timezone = chart.timezone();
-              var next = d3.time.hour.utc.offset(d, step);
-              var nextHours = moment.utc(next).tz(timezone).hours();
-              while (nextHours % step !== 0) {
-                if (nextHours > step) {
-                  next = d3.time.hour.utc.offset(d, (step - 1));
-                  nextHours = moment.utc(next).tz(timezone).hours();
-                }
-                else if (nextHours < step) {
-                  next = d3.time.hour.utc.offset(d, (step + 1));
-                  nextHours = moment.utc(next).tz(timezone).hours();
-                }
-              }
-              return xScale(next) - xScale(d);
+              return xScale(new Date(d.time + d.duration)) - xScale(new Date(d.time));
             },
-            x: function(d) { return xScale(d); }
+            x: function(d) { return xScale(new Date(d.time)); }
           });
         },
         exit: function() {
@@ -72,28 +52,6 @@ d3.chart('Background', {
     if (!arguments.length) { return this._opts; }
     this._opts = opts;
     return this;
-  },
-  step: function(step) {
-    if (!arguments.length) { return this._step; }
-    this._step = step;
-    return this;
-  },
-  timezone: function(timezone) {
-    if (!arguments.length) { return this._timezone; }
-    this._timezone = timezone;
-    return this;
-  },
-  transform: function(data) {
-    var timezone = this.timezone(), step = this.step();
-    return _.filter(data, function(d) {
-      var hour = moment(d).tz(timezone).hour();
-      if (hour % step === 0) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    });
   },
   width: function(width) {
     if (!arguments.length) { return this._width; }
@@ -113,17 +71,12 @@ module.exports = function() {
   return {
     create: function(el, opts) {
       opts = opts || {};
-      var defaults = {
-        extension: 'Background',
-        step: 3
-      };
+      var defaults = {};
       _.defaults(opts, defaults);
 
-      chart = el.chart(opts.extension)
-        .height(opts.height)
+      chart = el.chart('Background')
         .opts(opts.opts)
-        .step(opts.step)
-        .timezone(opts.timezone)
+        .height(opts.height)
         .width(opts.width)
         .xScale(opts.majorScale);
 

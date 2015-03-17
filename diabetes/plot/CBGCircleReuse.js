@@ -28,12 +28,6 @@ d3.chart('CBGCircleReuse', {
           .attr({
             r: opts.r,
             'class': 'CBG-circle'
-          })
-          .on('mouseover', function(d) {
-            chart.emitter().emit('focusCBG', d);
-          })
-          .on('mouseout', function(d) {
-            chart.emitter().emit('unfocusCBG');
           });
       },
       events: {
@@ -44,7 +38,7 @@ d3.chart('CBGCircleReuse', {
           this.attr({
             fill: opts.bgFillColor ? opts.bgFillColor : bgFill,
             cx: function(d) {
-              return xScale(new Date(d.offsetTime));
+              return xScale(new Date(d.time));
             },
             cy: function(d) {
               return yScale(d.value);
@@ -60,11 +54,6 @@ d3.chart('CBGCircleReuse', {
   bgFillScale: function(bgCategories) {
     if (!arguments.length) { return this._bgFillScale; }
     this._bgFillScale = scales.bgFill(bgCategories);
-    return this;
-  },
-  emitter: function(emitter) {
-    if (!arguments.length) { return this._emitter; }
-    this._emitter = emitter;
     return this;
   },
   height: function(height) {
@@ -115,7 +104,6 @@ module.exports = function() {
       _.defaults(opts, defaults);
 
       chart = el.chart('CBGCircleReuse')
-        .emitter(opts.emitter)
         .opts(opts.opts)
         .height(opts.height)
         .width(opts.width)

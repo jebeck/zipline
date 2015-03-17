@@ -28,12 +28,6 @@ d3.chart('SMBGCircleReuse', {
           .attr({
             r: opts.r,
             'class': 'SMBG-circle'
-          })
-          .on('mouseover', function(d) {
-            chart.emitter().emit('focusSMBG', d);
-          })
-          .on('mouseout', function(d) {
-            chart.emitter().emit('unfocusSMBG');
           });
       },
       events: {
@@ -44,7 +38,7 @@ d3.chart('SMBGCircleReuse', {
           this.attr({
             fill: opts.bgFillColor ? opts.bgFillColor : bgFill,
             cx: function(d) {
-              return xScale(new Date(d.offsetTime));
+              return xScale(new Date(d.time));
             },
             cy: function(d) {
               return yScale(d.value);
@@ -62,11 +56,6 @@ d3.chart('SMBGCircleReuse', {
   bgFillScale: function(bgCategories) {
     if (!arguments.length) { return this._bgFillScale; }
     this._bgFillScale = scales.bgFill(bgCategories);
-    return this;
-  },
-  emitter: function(emitter) {
-    if (!arguments.length) { return this._emitter; }
-    this._emitter = emitter;
     return this;
   },
   height: function(height) {
@@ -108,16 +97,10 @@ module.exports = function() {
   return {
     create: function(el, opts) {
       opts = opts || {};
-      var defaults = {
-        bgCategories: {
-          low: 80,
-          high: 180
-        }
-      };
+      var defaults = {};
       _.defaults(opts, defaults);
 
       chart = el.chart('SMBGCircleReuse')
-        .emitter(opts.emitter)
         .opts(opts.opts)
         .height(opts.height)
         .width(opts.width)

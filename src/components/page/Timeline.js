@@ -1,32 +1,48 @@
 /** @jsx React.DOM */
+var bows = require('bows');
 var React = require('react/addons');
 var cx = React.addons.classSet;
+var Immutable = require('immutable');
 
 var Label = require('../horizontal/Label');
 var Slice = require('./Slice');
+var ZipActions = require('../../actions/ZipActions');
 var Zipline = require('../../Zipline');
+
+var debug = bows('Timeline');
 
 var Timeline = React.createClass({
   propTypes: {
     details: React.PropTypes.bool.isRequired,
     dashboard: React.PropTypes.bool.isRequired,
-    timezone: React.PropTypes.string.isRequired,
-    zipConfig: React.PropTypes.object.isRequired,
-    onNavigation: React.PropTypes.func.isRequired
+    createConfig: React.PropTypes.object.isRequired,
+    drawConfig: React.PropTypes.object.isRequired,
+    dataBySlice: React.PropTypes.object.isRequired,
+    edgeLocation: React.PropTypes.object.isRequired
   },
   componentDidMount: function() {
+    var self = this;
+
     var zipNode = this.refs.zipline.getDOMNode();
-    var zipConfig = this.props.zipConfig;
-    var opts = zipConfig.opts || {};
-    var zipline = Zipline().create(zipNode, this.props.timezone, opts);
-    zipline.render(zipConfig.slices).relocate();
+    var zipline = Zipline().create(zipNode, this.props.createConfig.toJS());
+    zipline.configure(this.props.drawConfig.toJS())
+      .relocate(this.props.edgeLocation.valueOf())
+      .render(this.props.dataBySlice.toJS());
     d3.select(window).on('resize', function() {
       zipline.clear();
-      var dims = zipline.getDimensions(zipNode, opts.scroll === 'horizontal', opts.timespan);
-      zipline.resize(dims).render(zipConfig.slices).relocate();
+      var location = zipline.resize();
+      zipline.configure(self.props.drawConfig.toJS())
+        .relocate(location)
+        .render(self.props.dataBySlice.toJS());
     });
     this.chart = zipline;
-    this.bindEvents();
+  },
+  componentWillUpdate: function(nextProps, nextState) {
+    if (!Immutable.is(this.props.dataBySlice, nextProps.dataBySlice)) {
+      // this is pretty noisy in the console
+      // debug('Rerender in componentWillUpdate');
+      this.chart.render(nextProps.dataBySlice.toJS());
+    }
   },
   render: function() {
     var timelineClass = cx({
@@ -54,34 +70,31 @@ var Timeline = React.createClass({
     /* jshint ignore:end */
   },
   renderLabel: function() {
-    var label = this.props.zipConfig.opts ? this.props.zipConfig.opts.label || null : null;
+    var label = this.props.createConfig.get('label') || null;
     if (!label) {
       return null;
     }
 
-    var Label = label.component;
+    var Label = label.get('component');
     /* jshint ignore:start */
     return (
-      <Label fixed={false} large={!this.props.dashboard} text={label.text} id={'ZiplineLabel'}/>
+      <Label fixed={false} large={!this.props.dashboard} text={label.get('text')} id={'ZiplineLabel'}/>
     );
     /* jshint ignore:end */
   },
   renderSlices: function() {
-    // TODO: add error handling
-    var configs = this.props.zipConfig.slices;
+    var self = this;
+
+    var slices = this.props.drawConfig;
     var components = [];
-    for (var i = 0; i < configs.length; ++i) {
-      var slice = configs[i];
+    slices.forEach(function(slice) {
       /* jshint ignore:start */
       components.push(
-        <Slice dashboard={this.props.dashboard} slice={slice} key={slice.id} />
+        <Slice dashboard={self.props.dashboard} slice={slice} key={slice.get('id')} />
       );
       /* jshint ignore:end */
-    }
+    });
     return components;
-  },
-  bindEvents: function() {
-    this.chart.emitter.on('navigatedToCenter', this.props.onNavigation);
   }
 });
 

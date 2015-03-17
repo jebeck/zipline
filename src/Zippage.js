@@ -3,7 +3,10 @@ var React = require('react/addons');
 var cx = React.addons.classSet;
 
 var d3 = require('d3');
-var moment = require('moment-timezone');
+
+var ZipActions = require('./actions/ZipActions');
+var ConfigStore = require('./stores/ConfigStore');
+var DataStore = require('./stores/DataStore');
 
 var Dashboard = require('./components/page/Dashboard');
 var Details = require('./components/page/Details');
@@ -11,35 +14,39 @@ var Picker = require('./components/page/Picker');
 var Timeline = require('./components/page/Timeline');
 
 var Zippage = React.createClass({
+  propTypes: {
+    allData: React.PropTypes.array.isRequired,
+    baseConfig: React.PropTypes.object.isRequired,
+    details: React.PropTypes.bool.isRequired,
+    dashboard: React.PropTypes.bool.isRequired,
+    picker: React.PropTypes.bool.isRequired
+  },
   getDefaultProps: function() {
     return {
-      dateFormat: 'dddd, MMMM Do',
-      details: false,
-      dashboard: false,
-      monthFormat: 'MMMM YYYY',
-      picker: true,
-      timezone: 'US/Pacific'
+      details: true,
+      dashboard: true,
+      picker: true
     };
   },
   getInitialState: function() {
     return {
-      datetimeLocation: null
+      createConfig: null,
+      drawConfig: null,
+      dataBySlice: null,
+      data: null,
+      datetimeLocation: null,
+      focus: null,
+      initialViewBounds: null
     };
   },
-  propTypes: {
-    data: React.PropTypes.array.isRequired,
-    dateFormat: React.PropTypes.string.isRequired,
-    details: React.PropTypes.bool.isRequired,
-    dashboard: React.PropTypes.bool.isRequired,
-    monthFormat: React.PropTypes.string.isRequired,
-    picker: React.PropTypes.bool.isRequired,
-    timezone: React.PropTypes.string.isRequired,
-    zipConfig: React.PropTypes.object.isRequired
+  componentDidMount: function() {
+    ConfigStore.addChangeListener(this._onConfigChange);
+    DataStore.addChangeListener(this._onDataChange);
+    this.initialize();
   },
-  handleNavigation: function(datetimeStr) {
-    this.setState({
-      datetimeLocation: datetimeStr
-    });
+  componentWillUnmount: function() {
+    ConfigStore.removeChangeListener(this._onConfigChange);
+    DataStore.removeChangeListener(this._onDataChange);
   },
   render: function() {
     var details = this.props.details ? this.renderDetails() : null;
@@ -94,21 +101,13 @@ var Zippage = React.createClass({
     /* jshint ignore:end */
   },
   renderDetails: function() {
-    var date = moment(this.props.datetimeLocation)
-      .tz(this.props.timezone)
-      .format(this.props.dateFormat);
-
     /* jshint ignore:start */
     return (
-      <Details date={date} />
+      <Details />
     );
     /* jshint ignore:end */
   },
   renderPicker: function() {
-    var monthYear = moment(this.props.datetimeLocation)
-      .tz(this.props.timezone)
-      .format(this.props.monthFormat);
-
     // rendering a picker without a dashboard is not supported
     if (!this.props.dashboard) {
       return null;
@@ -116,25 +115,65 @@ var Zippage = React.createClass({
     /* jshint ignore:start */
     return (
       <Picker
-        empty={!this.props.picker}
-        monthYear={this.props.picker ? monthYear : ''} />
+        empty={!this.props.picker} />
     );
     /* jshint ignore:end */
   },
   renderTimeline: function() {
+    if (!this.readyToDraw()) {
+      return null;
+    }
     /* jshint ignore:start */
     return (
       <Timeline
         dashboard={this.props.dashboard}
         details={this.props.details}
-        timezone={this.props.timezone}
-        zipConfig={this.props.zipConfig}
-        onNavigation={this.handleNavigation} />
+        createConfig={this.state.createConfig}
+        drawConfig={this.state.drawConfig}
+        dataBySlice={this.state.dataBySlice}
+        edgeLocation={this.state.initialViewBounds[0]} />
     );
     /* jshint ignore:end */
   },
+  getPlotTypes: function() {
+    var slices = this.props.baseConfig.slices;
+    var plotTypes = [];
+    _.each(slices, function(slice) {
+      var plots = slice.plots;
+      _.each(plots, function(plot) {
+        if (plot.type) {
+          plotTypes.push(plot.type);
+        }
+      });
+    });
+    return plotTypes;
+  },
   isAlone: function() {
     return !this.props.details;
+  },
+  initialize: function() {
+    ZipActions.initializeData(this.props.allData, this.getPlotTypes());
+    ZipActions.initializeConfig(this.props.baseConfig);
+  },
+  readyToDraw: function() {
+    return this.state.createConfig !== null &&
+      this.state.drawConfig !== null &&
+      this.state.dataBySlice !== null;
+  },
+  _onConfigChange: function() {
+    this.setState({
+      createConfig: ConfigStore.getCreateConfig(),
+      drawConfig: ConfigStore.getDrawConfig(),
+      dataBySlice: ConfigStore.getDataBySlice()
+    });
+  },
+  _onDataChange: function() {
+    this.setState({
+      data: DataStore.getCurrentData(),
+      datetimeLocation: DataStore.getCenter(),
+      focus: DataStore.getFocusedData(),
+      initialViewBounds: DataStore.getInitialViewBounds()
+    });
   }
 });
 

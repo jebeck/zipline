@@ -1,8 +1,7 @@
 var _ = require('lodash');
 var d3 = window.d3;
-var EventEmitter = require('events').EventEmitter;
-var moment = require('moment-timezone');
 
+var ZipActions = require('./actions/ZipActions');
 var scales = require('./util/scales');
 var timer = require('./util/timer');
 
@@ -10,33 +9,25 @@ d3.chart('Zipline', {
   initialize: function() {
     var chart = this;
 
-    var makeSliceFn = function(bounds) {
-      chart.slices = [];
+    var makeSliceFn = function() {
+      chart.slices = {};
       return function(d, el, adjusted) {
         var horizontal = chart.scrollDirection() === 'horizontal';
         var slice = d.background().create(el, {
-          extension: d.extension,
           height: adjusted.height,
           majorScale: chart.scale(),
-          opts: d.opts,
-          timezone: chart.timezone(),
+          opts: d.drawOpts,
           width: horizontal ? chart.width() : adjusted.width
         });
-        slice.data = d.data;
-        slice.once = d.once;
-        chart.slices.push(slice);
-        _.each(d.plot, function(p) {
+        chart.slices[d.id] = slice;
+        _.each(d.plots, function(p) {
           var sliver = p.chart().create(el, {
-            emitter: chart.emitter(),
             height: adjusted.height,
             majorScale: chart.scale(),
-            opts: p.opts,
-            timezone: chart.timezone(),
+            opts: p.drawOpts,
             width: horizontal ? chart.width() : adjusted.width
           });
-          sliver.data = p.data;
-          sliver.once = p.once;
-          chart.slices.push(sliver);
+          chart.slices[p.id] = sliver;
         });
       };
     };
@@ -51,8 +42,7 @@ d3.chart('Zipline', {
       },
       events: {
         update: function() {
-          var bounds = chart.location().bounds;
-          var sliceFn = makeSliceFn(bounds);
+          var sliceFn = makeSliceFn();
 
           function getLabel(d) {
             return d3.select('#' + d.id + 'Label');
@@ -100,23 +90,12 @@ d3.chart('Zipline', {
   },
   clear: function() {
     this.base.selectAll('svg').remove();
-    this.emitter().removeAllListeners();
 
-    return this;
-  },
-  emitter: function(emitter) {
-    if (!arguments.length) { return this._emitter; }
-    this._emitter = emitter;
     return this;
   },
   height: function(height) {
     if (!arguments.length) { return this._height; }
     this._height = height;
-    return this;
-  },
-  location: function(location) {
-    if (!arguments.length) { return this._location; }
-    this._location = location;
     return this;
   },
   scale: function(scale) {
@@ -129,11 +108,6 @@ d3.chart('Zipline', {
     this._scrollDirection = scrollDirection;
     return this;
   },
-  timezone: function(timezone) {
-    if (!arguments.length) { return this._timezone; }
-    this._timezone = timezone;
-    return this;
-  },
   width: function(width) {
     if (!arguments.length) { return this._width; }
     this._width = width;
@@ -142,7 +116,18 @@ d3.chart('Zipline', {
 });
 
 module.exports = function() {
-  var chart, emitter = new EventEmitter();
+  var chart, node, horizontal, timespan, scrollPosition;
+
+  function getDimensions() {
+    var scale = scales.zipscale(horizontal ? node.offsetWidth :
+      node.offsetHeight, timespan.single);
+    var scaleExtent = Math.abs(scale(timespan.total[0]) - scale(timespan.total[1]));
+
+    var width = horizontal ? scaleExtent : node.offsetWidth;
+    var height = horizontal ? node.offsetHeight : scaleExtent;
+
+    return {width: width, height: height, scale: scale};
+  }
 
   return {
     clear: function() {
@@ -150,43 +135,24 @@ module.exports = function() {
 
       return this;
     },
-    create: function(el, timezone, opts) {
+    create: function(el, opts) {
       opts = opts || {};
-      var now = moment().utc();
       var defaults = {
-        scroll: 'horizontal',
-        timespan: {
-          first: [
-            moment(now).tz(timezone).startOf('year').toDate(),
-            moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
-          ],
-          total: [
-            moment(now).tz(timezone).startOf('year').toDate(),
-            moment(now).tz(timezone).endOf('year').toDate()
-          ]
-        },
-        location: {
-          bounds: [
-            moment(now).tz(timezone).startOf('year').toDate(),
-            moment(now).tz(timezone).startOf('year').add(1, 'days').toDate()
-          ]
-        },
-        timezone: timezone
+        scroll: 'horizontal'
       };
       _.defaults(opts, defaults);
 
-      var horizontal = opts.scroll === 'horizontal';
+      node = el;
+      horizontal = opts.scroll === 'horizontal';
+      timespan = opts.timespan;
 
-      var dims = this.getDimensions(el, horizontal, opts.timespan);
+      var dims = getDimensions();
 
       chart = d3.select(el)
         .chart('Zipline')
-        .emitter(emitter)
         .height(dims.height)
-        .location(opts.location)
         .scale(dims.scale)
         .scrollDirection(opts.scroll)
-        .timezone(opts.timezone)
         .width(dims.width);
 
       var scrolls = d3.select('.Zipline');
@@ -196,70 +162,50 @@ module.exports = function() {
       });
 
       scrolls.on('scroll', function() {
-        var scrollProp = chart.scrollDirection() === 'horizontal' ? 'scrollLeft' : 'scrollTop';
+        var scrollProp = horizontal ? 'scrollLeft' : 'scrollTop';
         var newDate = chart.scale().invert(scrolls.property(scrollProp));
-        chart.location({
-          bounds: [newDate, d3.time.day.utc.offset(newDate, 1)],
-          center: d3.time.hour.utc.offset(newDate, 12)
-        });
-        emitter.emit('navigatedToCenter', chart.location().center.toISOString());
-        emitter.emit('leftEdge', dims.scale(chart.location().bounds[0]));
-
-        _.each(chart.slices, function(slice) {
-          if (!slice.once) {
-            var bounds = chart.location().bounds;
-            var data = slice.data(bounds);
-            if (data !== null) {
-              slice.render(data);
-            }
-          }
-        });
+        scrollPosition = newDate;
+        ZipActions.filterData([
+          d3.time.day.utc.offset(newDate, -1),
+          d3.time.day.utc.offset(newDate, 2)
+        ]);
       });
 
       return this;
     },
-    emitter: emitter,
-    getDimensions: function(el, horizontal, timespan) {
-      var scale = scales.zipscale(horizontal ? el.offsetWidth : el.offsetHeight, timespan.first);
-      var scaleExtent = Math.abs(scale(timespan.total[0]) - scale(timespan.total[1]));
+    configure: function(slices) {
+      chart.draw(slices);
 
-      var width = horizontal ? scaleExtent : el.offsetWidth;
-      var height = horizontal ? el.offsetHeight : scaleExtent;
-      return {width: width, height: height, scale: scale};
+      return this;
     },
-    relocate: function(bounds) {
-      bounds = bounds || chart.location().bounds;
+    relocate: function(edge) {
       var scrolls = d3.select('.Zipline'), scale = chart.scale();
-      if (chart.scrollDirection() === 'horizontal') {
-        scrolls.property('scrollLeft', scale(bounds[0]));
+      if (horizontal) {
+        scrolls.property('scrollLeft', scale(edge));
       }
       else {
-        scrolls.property('scrollTop', scale(bounds[0]));
+        scrolls.property('scrollTop', scale(edge));
       }
-    },
-    render: function(data) {
-      var bounds = chart.location().bounds;
-
-      chart.draw(data);
-
-      // initial draw
-      timer.start('Initial Draw');
-      _.each(chart.slices, function(slice) {
-        var data = slice.data(bounds, true);
-        if (data !== null) {
-          slice.render(data);
-        }
-      });
-      timer.end('Initial Draw');
 
       return this;
     },
-    resize: function(dims) {
+    render: function(slices) {
+      _.forIn(slices, function(slice, sliceId) {
+        if (chart.slices[sliceId] && !_.isEmpty(slice)) {
+          chart.slices[sliceId].render(slice);
+        }
+      });
+
+      return this;
+    },
+    resize: function() {
+      var dims = getDimensions();
+
       chart.height(dims.height)
         .scale(dims.scale)
         .width(dims.width);
 
-      return this;
+      return scrollPosition;
     }
   };
 };

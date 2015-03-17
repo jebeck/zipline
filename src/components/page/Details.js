@@ -2,9 +2,7 @@
 var React = require('react');
 
 var Details = React.createClass({
-  propTypes: {
-    date: React.PropTypes.string.isRequired
-  },
+  propTypes: {},
   render: function() {
     var detailsClass = 'FlexItem FlexItem-details';
     /* jshint ignore:start */

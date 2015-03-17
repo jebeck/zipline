@@ -28,12 +28,12 @@ d3.chart('MovesDailyStoryline', {
         merge: function() {
           var xScale = chart.xScale();
           this.attr({
-            x: function(d) { return xScale(new Date(d.startTime)); },
+            x: function(d) { return xScale(new Date(d.time)); },
             width: function(d) {
-              return xScale(new Date(d.endTime)) - xScale(new Date(d.startTime));
+              return xScale(new Date(Date.parse(d.time) + d.duration)) - xScale(new Date(d.time));
             },
             'class': function(d) {
-              return d.subtype + ' MovesDailyStoryline-rect';
+              return d.subType + ' MovesDailyStoryline-rect';
             }
           });
         },
@@ -80,10 +80,10 @@ module.exports = function() {
       _.defaults(opts, defaults);
 
       chart = el.chart('MovesDailyStoryline')
-        .opts(opts.opts)
         .height(opts.height)
-        .xScale(opts.majorScale)
-        .width(opts.width);
+        .opts(opts.opts)
+        .width(opts.width)
+        .xScale(opts.majorScale);
 
       return this;
     },

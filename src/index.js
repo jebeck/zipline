@@ -4,11 +4,13 @@ require('script!d3.chart/d3.chart.js');
 require('./less/zipline.less');
 
 var zipline = {
+  actions: {
+    ZipActions: require('./actions/ZipActions')
+  },
   components: {
     horizontal: {
       Background: require('./components/horizontal/Background'),
-      Label: require('./components/horizontal/Label'),
-      TimeLabels: require('./components/horizontal/TimeLabels')
+      Label: require('./components/horizontal/Label')
     },
     page: {
       Dashboard: require('./components/page/Dashboard'),
@@ -17,9 +19,18 @@ var zipline = {
       Timeline: require('./components/page/Timeline')
     }
   },
+  constants: {
+    ZipConstants: require('./constants/ZipConstants')
+  },
   dataservices: {
-    BasicFilter: require('./dataservices/BasicFilter'),
     DateTriggerFilter: require('./dataservices/DateTriggerFilter')
+  },
+  dispatcher: {
+    ZipDispatcher: require('./dispatcher/ZipDispatcher')
+  },
+  stores: {
+    ConfigStore: require('./stores/ConfigStore'),
+    DataStore: require('./stores/DataStore')
   },
   util: {
     colors: require('./util/colors'),

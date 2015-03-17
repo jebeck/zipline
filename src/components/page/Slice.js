@@ -11,25 +11,25 @@ var Slice = React.createClass({
     var slice = this.props.slice;
     var sliceClass = cx({
       'Slice': true,
-      'Slice-half': slice.weight === 0.5,
-      'Slice--single': slice.weight === 1,
-      'Slice--double': slice.weight === 2,
-      'Slice--triple': slice.weight === 3
+      'Slice-half': slice.get('weight') === 0.5,
+      'Slice--single': slice.get('weight') === 1,
+      'Slice--double': slice.get('weight') === 2,
+      'Slice--triple': slice.get('weight') === 3
     });
-    label = slice.label ? this.renderLabel(slice.label) : null;
+    label = slice.get('label') ? this.renderLabel(slice.get('label')) : null;
     /* jshint ignore:start */
     return (
-      <div className={sliceClass} ref={this.props.slice.id}>
+      <div className={sliceClass} ref={this.props.slice.get('id')}>
         {label || null}
       </div>
     );
     /* jshint ignore:end */
   },
   renderLabel: function(label) {
-    var Label = label.component;
+    var Label = label.get('component');
     /* jshint ignore:start */
     return (
-      <Label fixed={true} large={!this.props.dashboard} text={label.text} id={this.props.slice.id + 'Label'} />
+      <Label fixed={true} large={!this.props.dashboard} text={label.get('text')} id={this.props.slice.get('id') + 'Label'} />
     );
     /* jshint ignore:end */
   },
