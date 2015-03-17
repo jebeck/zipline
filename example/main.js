@@ -5,4 +5,4 @@ require('./less/example.less');
 
 var App = require('./App');
 
-window.app = React.renderComponent(App(), document.body);
+window.app = React.render(<App />, document.body);
