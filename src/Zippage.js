@@ -23,8 +23,8 @@ var Zippage = React.createClass({
   },
   getDefaultProps: function() {
     return {
-      details: true,
-      dashboard: true,
+      details: false,
+      dashboard: false,
       picker: true
     };
   },

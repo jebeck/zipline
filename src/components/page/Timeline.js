@@ -1,10 +1,12 @@
 /** @jsx React.DOM */
 var React = require('react/addons');
 
+var _ = require('lodash');
 var bows = require('bows');
 var cx = require('classnames');
 var Immutable = require('immutable');
 
+var Chrome = require('./Chrome');
 var Label = require('../horizontal/Label');
 var Slice = require('./Slice');
 var ZipActions = require('../../actions/ZipActions');
@@ -20,6 +22,14 @@ var Timeline = React.createClass({
     drawConfig: React.PropTypes.object.isRequired,
     dataBySlice: React.PropTypes.object.isRequired,
     edgeLocation: React.PropTypes.object.isRequired
+  },
+  getInitialState: function() {
+    return {
+      fastBack: _.noop,
+      fastForward: _.noop,
+      panBack: _.noop,
+      panForward: _.noop
+    };
   },
   componentDidMount: function() {
     var self = this;
@@ -37,6 +47,12 @@ var Timeline = React.createClass({
         .render(self.props.dataBySlice.toJS());
     });
     this.chart = zipline;
+    this.setState({
+      fastBack: zipline.relocate.bind(null, {scrollPosition: 0}),
+      fastForward: zipline.relocate.bind(null, this.props.edgeLocation.valueOf()),
+      panBack: zipline.pan.bind(null, -864e5),
+      panForward: zipline.pan.bind(null, 864e5)
+    });
   },
   componentWillUpdate: function(nextProps, nextState) {
     if (!Immutable.is(this.props.dataBySlice, nextProps.dataBySlice)) {
@@ -62,7 +78,11 @@ var Timeline = React.createClass({
     var slices = this.renderSlices();
     return (
       <div className={timelineClass}>
-        <div className="Chrome"></div>
+        <Chrome large={!this.props.dashboard}
+          onClickFastBack={this.state.fastBack}
+          onClickFastForward={this.state.fastForward}
+          onClickLeft={this.state.panBack}
+          onClickRight={this.state.panForward} />
         {label}
         <div className={ziplineClass} ref="zipline">{slices}</div>
       </div>

@@ -46,6 +46,7 @@
     "jsx-loader": "^0.12.2",
     "less-loader": "^2.1.0",
     "mocha": "^2.2.1",
+    "react-tools": "^0.13.1",
     "rosetta": "^0.3.0",
     "script-loader": "^0.6.1",
     "style-loader": "^0.8.3",
@@ -54,6 +55,10 @@
     "webpack-dev-server": "^1.7.0"
   },
   "jest": {
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "scriptPreprocessor": "../preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "../node_modules/react"
+    ]
   }
 }

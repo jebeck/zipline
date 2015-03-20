@@ -22,6 +22,16 @@
 
 body {
   background: @background;
+
+  h1, h2, h3 {
+    font-size: inherit;
+  }
+  i {
+    font-size: inherit;
+  }
+  i:hover, i:focus, i:active {
+    color: @focus;
+  }
 }
 
 @timeline-row-height: 66.6666666667%;
@@ -91,6 +101,8 @@ body {
 @label-margin: 0.25em 0.25em 0.1em 0.25em;
 @label-size--large: 1.5em;
 @label-size--regular: 1.125em;
+@chrome-text--large: 1.75em;
+@chrome-text--regular: 1.25em;
 
 @chrome-height: 2.5em;
 

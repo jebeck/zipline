@@ -1,5 +1,7 @@
 $background = #0F1340
 
+$focus = #707cf6
+
 $label = #A4A4A4
 
 interval:

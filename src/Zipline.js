@@ -178,13 +178,30 @@ module.exports = function() {
 
       return this;
     },
+    pan: function(delta) {
+      var scrolls = d3.select('.Zipline'), scale = chart.scale();
+      var scrollProp = horizontal ? 'scrollLeft' : 'scrollTop';
+      var current = scrolls.property(scrollProp);
+      var next = scale(new Date(scrollPosition.valueOf() + delta));
+      scrolls.transition()
+        .duration(500)
+        .tween('pan', function() {
+          var ix = d3.interpolate(current, next);
+          return function(t) {
+            scrolls.property(scrollProp, ix(t));
+          };
+        });
+
+      return this;
+    },
     relocate: function(edge) {
       var scrolls = d3.select('.Zipline'), scale = chart.scale();
-      if (horizontal) {
-        scrolls.property('scrollLeft', scale(edge));
+      var scrollProp = horizontal ? 'scrollLeft' : 'scrollTop';
+      if (typeof edge === 'object' && edge.scrollPosition !== undefined) {
+        scrolls.property(scrollProp, edge.scrollPosition);
       }
       else {
-        scrolls.property('scrollTop', scale(edge));
+        scrolls.property(scrollProp, scale(edge));
       }
 
       return this;
