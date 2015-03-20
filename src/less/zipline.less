@@ -20,8 +20,16 @@
   background-color: rgba(0,0,0,0.15);
 }
 
+.focus {
+  color: @focus;
+}
+
 body {
   background: @background;
+
+  :focus {
+    .focus;
+  }
 
   h1, h2, h3 {
     font-size: inherit;
@@ -29,8 +37,14 @@ body {
   i {
     font-size: inherit;
   }
-  i:hover, i:focus, i:active {
-    color: @focus;
+  i:hover, i:active {
+    .focus;
+  }
+  a {
+    font-size: inherit;
+  }
+  a:hover, a:active {
+    .focus;
   }
 }
 
