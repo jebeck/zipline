@@ -1,6 +1,7 @@
 var React = require('react');
 
-require('css!vc-reset-css/reset.min.css');
+require('style!css!vc-reset-css/reset.min.css');
+require('style!css!../fontello/css/zipline.css');
 require('./less/example.less');
 
 var App = require('./App');

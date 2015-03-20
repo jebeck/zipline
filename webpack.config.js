@@ -13,10 +13,13 @@ module.exports = {
   },
   module: {
     loaders: [
+      {test: /\.eot/, loader: 'url-loader?mimetype=application/vnd.ms-fontobject'},
       {test: /\.json$/, loader: 'json-loader'},
       {test: /\.js$/, loader: 'jsx-loader'},
       {test: /\.less$/, loader: 'style-loader!css-loader!autoprefixer-loader!less-loader'},
-      {test: /\.ttf$/, loader: 'url-loader?mimetype=application/x-font-ttf'}
+      {test: /\.svg/, loader: 'url-loader?mimetype=image/svg+xml'},
+      {test: /\.ttf/, loader: 'url-loader?mimetype=application/x-font-ttf'},
+      {test: /\.woff/, loader: 'url-loader?mimetype=application/font-woff'}
     ]
   },
   plugins: [definePlugin]
