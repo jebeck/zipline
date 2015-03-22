@@ -1,8 +1,11 @@
 $background = #0F1340
+$backgroundlighter = #102857
 
 $focus = #707cf6
 
 $label = #A4A4A4
+$clickable = #E3E3E3
+$accent = #F0F0F0
 
 interval:
     $start = #004973

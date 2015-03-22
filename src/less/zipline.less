@@ -26,22 +26,19 @@
 
 body {
   background: @background;
+  h3 {
+    font-weight: 300;
+  }
+  font-weight: 300;
 
   :focus {
     .focus;
-  }
-
-  h1, h2, h3 {
-    font-size: inherit;
-  }
-  i {
-    font-size: inherit;
   }
   i:hover, i:active {
     .focus;
   }
   a {
-    font-size: inherit;
+    color: @clickable;
   }
   a:hover, a:active {
     .focus;

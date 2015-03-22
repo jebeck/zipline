@@ -23,7 +23,8 @@ var Zippage = React.createClass({
   },
   getDefaultProps: function() {
     return {
-      details: false,
+      dateAndTimeMask: 'ddd, MMM Do h:mm a',
+      details: true,
       dashboard: false,
       picker: true
     };
@@ -33,6 +34,7 @@ var Zippage = React.createClass({
       createConfig: null,
       drawConfig: null,
       dataBySlice: null,
+      currentViewBounds: {},
       data: null,
       datetimeLocation: null,
       focus: null,
@@ -96,7 +98,9 @@ var Zippage = React.createClass({
   },
   renderDetails: function() {
     return (
-      <Details />
+      <Details alone={!this.props.dashboard}
+        viewBounds={this.state.currentViewBounds}
+        viewBoundsMask={this.props.dateAndTimeMask} />
     );
   },
   renderPicker: function() {
@@ -157,6 +161,7 @@ var Zippage = React.createClass({
   },
   _onDataChange: function() {
     this.setState({
+      currentViewBounds: DataStore.getViewBounds(),
       data: DataStore.getCurrentData(),
       datetimeLocation: DataStore.getCenter(),
       focus: DataStore.getFocusedData(),

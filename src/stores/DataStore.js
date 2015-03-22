@@ -211,13 +211,19 @@ var DataStore = assign({}, EventEmitter.prototype, {
   getViewBounds: function() {
     var view = _dataState.time.location.view;
     if (view.leftEdge !== null && view.rightEdge !== null) {
-      return [
-        view.leftEdge,
-        view.rightEdge
-      ];
+      return {
+        leftEdge: {
+          datetime: view.leftEdge,
+          timezone: _tzInfo(view.leftEdge)
+        },
+        rightEdge: {
+          datetime: view.rightEdge,
+          timezone: _tzInfo(view.rightEdge)
+        }
+      };
     }
     else {
-      return [];
+      return {};
     }
   }
 });

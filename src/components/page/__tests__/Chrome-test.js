@@ -16,6 +16,14 @@ describe('Chrome', function() {
       onClickRight={_.noop} />
   );
 
+  var renderedChromeLg = TestUtils.renderIntoDocument(
+    <Chrome large={true}
+      onClickFastBack={_.noop}
+      onClickFastForward={_.noop}
+      onClickLeft={_.noop}
+      onClickRight={_.noop} />
+  );
+
   it('is a zipline Chrome React element', function() {
     expect(TestUtils.isCompositeComponentWithType(renderedChrome, Chrome)).toBe(true);
   });
@@ -23,5 +31,10 @@ describe('Chrome', function() {
   it('has the Chrome--regular class by default (i.e., when `large` is false)', function() {
     var chromeReg = TestUtils.findRenderedDOMComponentWithClass(renderedChrome, 'Chrome--regular');
     expect(TestUtils.isDOMComponent(chromeReg)).toBe(true);
+  });
+
+  it('has the Chrome--large class when `large` is true', function() {
+    var chromeLg = TestUtils.findRenderedDOMComponentWithClass(renderedChromeLg, 'Chrome--large');
+    expect(TestUtils.isDOMComponent(chromeLg)).toBe(true);
   });
 });

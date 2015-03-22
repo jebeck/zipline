@@ -129,7 +129,7 @@ describe('DataStore', function() {
 
   it('returns an empty array for view bounds before initialization', function() {
     var view = DataStore.getViewBounds();
-    expect(view).toEqual([]);
+    expect(view).toEqual({});
   });
 
   it('stores an initial data array and sets the timespan accordingly', function() {
@@ -185,10 +185,16 @@ describe('DataStore', function() {
     expect(Immutable.is(currData.bar.dataInView, Immutable.List([data[3]])));
     expect(Immutable.is(currData.offsetInterval.dataWithBuffer, Immutable.List([data[0]])));
     expect(Immutable.is(currData.offsetInterval.dataInView, Immutable.List([data[0]])));
-    expect(DataStore.getViewBounds()).toEqual([
-      bounds[0],
-      bounds[1]
-    ]);
+    expect(DataStore.getViewBounds()).toEqual({
+      leftEdge: {
+        datetime: bounds[0],
+        timezone: 'UTC'
+      },
+      rightEdge: {
+        datetime: bounds[1],
+        timezone: 'UTC'
+      }
+    });
   });
 
   it('filters data given BIGGER bounds and sets the buffer and view bounds accordingly', function() {
@@ -206,10 +212,16 @@ describe('DataStore', function() {
     expect(Immutable.is(currData.bar.dataInView, Immutable.List([data[3]])));
     expect(Immutable.is(currData.offsetInterval.dataWithBuffer, Immutable.List([data[0]])));
     expect(Immutable.is(currData.offsetInterval.dataInView, Immutable.List([data[0]])));
-    expect(DataStore.getViewBounds()).toEqual([
-      bounds[0],
-      bounds[1]
-    ]);
+    expect(DataStore.getViewBounds()).toEqual({
+      leftEdge: {
+        datetime: bounds[0],
+        timezone: 'UTC'
+      },
+      rightEdge: {
+        datetime: bounds[1],
+        timezone: 'UTC'
+      }
+    });
   });
 
   it('sets focused data', function() {
