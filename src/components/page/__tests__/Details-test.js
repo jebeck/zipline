@@ -1,4 +1,6 @@
 jest.dontMock('../Details');
+jest.dontMock('../Details-Collapsible');
+jest.dontMock('../Details-Dates');
 jest.dontMock('classnames');
 
 var d3 = require('d3');

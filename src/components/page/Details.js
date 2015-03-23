@@ -3,7 +3,9 @@ var React = require('react');
 
 var _ = require('lodash');
 var cx = require('classnames');
-var moment = require('moment-timezone');
+
+var Collapsible = require('./Details-Collapsible');
+var Dates = require('./Details-Dates');
 
 var Details = React.createClass({
   propTypes: {
@@ -33,22 +35,13 @@ var Details = React.createClass({
     if (_.isEmpty(this.props.viewBounds)) {
       return null;
     }
-    var left = this.props.viewBounds.leftEdge;
-    var right = this.props.viewBounds.rightEdge;
-    var leftTzAbbr = moment.tz.zone(left.timezone).abbr(left.datetime.valueOf());
-    var rightTzAbbr = moment.tz.zone(right.timezone).abbr(right.datetime.valueOf());
+    var dates = (
+      <Dates viewBounds={this.props.viewBounds}
+        viewBoundsMask={this.props.viewBoundsMask} />
+    );
     return (
-      <div>
-        <h3>Currently in View</h3>
-        <p className='ViewBounds ViewBounds--left'>
-          <span className='Span--secondary'>from  </span>
-          {moment(left.datetime).tz(left.timezone).format(this.props.viewBoundsMask) + ' ' + leftTzAbbr}
-        </p>
-        <p className='ViewBounds ViewBounds--right'>
-          {moment(right.datetime).tz(right.timezone).format(this.props.viewBoundsMask) + ' ' + rightTzAbbr}
-          <span className='Span--secondary'>  to</span>
-        </p>
-      </div>
+      <Collapsible header={'Currently in View'}
+        toCollapse={dates} />
     );
   }
 });
