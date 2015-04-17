@@ -12,7 +12,7 @@ var ZipDispatcher = require('../dispatcher/ZipDispatcher');
 var localTimeIntervalsMaker = require('../dataservices/localTimeIntervals');
 
 var debug = _.noop;
-if (typeof window !== 'undefined' && (!window.process || window.process.title !== '/usr/local/bin/node')) {
+if (typeof window !== 'undefined' && (!window.process || window.process.title.search('bin/node') === -1)) {
   debug = require('bows')('ConfigStore');
 }
 
