@@ -1,8 +1,12 @@
 .DS_Store
 *.pxm
+activity/less/colors.less
+activity/util/colors.js
 data/
 diabetes/less/colors.less
 diabetes/util/colors.js
+example/less/colors.less
+example/util/colors.js
 node_modules/
 src/less/colors.less
 src/util/colors.js
