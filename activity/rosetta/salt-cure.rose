@@ -1,6 +1,2 @@
 data:
   $fill = #FFFFFF
-
-axes:
-  $fill = #FFFFFF
-  $background = #0F1340

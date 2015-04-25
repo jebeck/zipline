@@ -1,0 +1,13 @@
+bg:
+  low:
+    $fill = #FF8B7C
+    $start = #D3DBDD
+    $end = #F8F9FA
+  target:
+    $fill = #76D3A6
+    $start = #D3DBDD
+    $end = #F8F9FA
+  high:
+    $fill = #BB9AE7
+    $start = #D3DBDD
+    $end = #F8F9FA

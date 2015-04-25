@@ -1,7 +1,4 @@
-/** @jsx React.DOM */
-var React = require('react');
-
-var d3 = window.d3;
+var common = require('./common.config');
 
 var zipline = require('../src/');
 var Background = zipline.components.horizontal.Background;
@@ -9,12 +6,7 @@ var Label = zipline.components.horizontal.Label;
 
 var scales = zipline.util.scales;
 
-var colors = zipline.util.colors;
-var convert = zipline.util.rgbtohex;
-var intervalColors = {
-  start: convert(colors.interval.start),
-  end: convert(colors.interval.end)
-}; 
+var intervalColors = common.intervalColors;
 
 var activity = require('../activity/');
 var Moves = activity.plot.MovesDailyStoryline;
@@ -24,31 +16,11 @@ var BGBackground = diabetes.plot.BGBackground;
 var CBG = diabetes.plot.CBGCircleReuse;
 var SMBG = diabetes.plot.SMBGCircleReuse;
 
-var bgColors = diabetes.util.colors.bg;
-var bgFillColor = convert(bgColors.fill);
-var bgIntervalColors = {
-  low: {
-    start: convert(bgColors.low.basic),
-    end: convert(bgColors.low.lighter)
-  },
-  target: {
-    start: convert(bgColors.target.basic),
-    end: convert(bgColors.target.lighter)
-  },
-  high: {
-    start: convert(bgColors.high.basic),
-    end: convert(bgColors.high.lighter)
-  }
-};
+var bgCategories = common.bgCategories;
+var bgIntervalColors = common.bgIntervalColors;
 var bgSizes = {
   cbg: 2.5,
   smbg: 8
-};
-
-var bgCategories = {
-  low: 65,
-  high: 140,
-  units: 'mg/dL'
 };
 
 module.exports = {
@@ -84,7 +56,7 @@ module.exports = {
       text: 'Blood Glucose'
     },
     drawOpts: {
-      bgCategories: bgCategories,
+      bgCategories: common.bgCategories,
       fillScales: {
         low: scales.hourcolorscale(bgIntervalColors.low.start, bgIntervalColors.low.end),
         target: scales.hourcolorscale(bgIntervalColors.target.start, bgIntervalColors.target.end),
@@ -97,8 +69,7 @@ module.exports = {
       id: 'CBG',
       type: 'cbg',
       drawOpts: {
-        bgCategories: bgCategories,
-        bgFillColor: bgFillColor,
+        bgCategories: common.bgCategories,
         r: bgSizes.cbg,
         scaleR: bgSizes.smbg
       }
@@ -107,8 +78,7 @@ module.exports = {
       id: 'SMBG',
       type: 'smbg',
       drawOpts: {
-        bgCategories: bgCategories,
-        bgFillColor: bgFillColor,
+        bgCategories: common.bgCategories,
         r: bgSizes.smbg,
         scaleR: bgSizes.smbg
       }

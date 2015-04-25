@@ -1,0 +1,13 @@
+$background = #FFFFFF
+$scrollbar = #F7F8FA
+$scrollthumb = #B8B9BA
+
+$focus = #12D3D8
+
+$label = #727375
+$clickable = #0B9EB3
+$accent = #989897
+
+interval:
+    $start = #D3DBDD
+    $end = #F8F9FA

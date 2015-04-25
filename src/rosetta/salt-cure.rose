@@ -1,7 +1,8 @@
 $background = #0F1340
-$backgroundlighter = #102857
+$scrollbar = #102857
+$scrollthumb = #364A70
 
-$focus = #707cf6
+$focus = #707CF6
 
 $label = #A4A4A4
 $clickable = #E3E3E3

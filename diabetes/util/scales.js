@@ -16,12 +16,12 @@ module.exports = {
   },
   bgFill: function(bgCategories) {
     var categoryColors = {
-      low: convert(colors.bg.low.basic),
-      target: convert(colors.bg.target.basic),
-      high: convert(colors.bg.high.basic)
+      low: convert(colors.bg.low.fill),
+      target: convert(colors.bg.target.fill),
+      high: convert(colors.bg.high.fill)
     };
     return d3.scale.threshold()
-      .domain([bgCategories.low, bgCategories.high])
+      .domain([bgCategories.low/GLUCOSE_CONVERSION, bgCategories.high/GLUCOSE_CONVERSION])
       .range([categoryColors.low, categoryColors.target, categoryColors.high]);
   }
 };

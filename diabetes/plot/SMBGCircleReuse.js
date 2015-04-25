@@ -10,7 +10,7 @@ d3.chart('SMBGCircleReuse', {
     var chart = this;
 
     var bgFill = function(d) {
-      return chart.bgFillScale()(d);
+      return chart.bgFillScale()(d.value);
     };
 
     this.layer('SMBG-circles', this.base.append('g').attr({

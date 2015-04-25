@@ -1,15 +1,13 @@
 bg:
-  $fill = #FFFFFF
   low:
-    $basic = #8D0100
-    $lighter = #A03130
+    $fill = #FFFFFF
+    $start = #8D0100
+    $end = #A03130
   target:
-    $basic = #720741
-    $lighter = #893261
+    $fill = #FFFFFF
+    $start = #720741
+    $end = #893261
   high:
-    $basic = #DA7905
-    $lighter = #E09B48
-
-axes:
-  $fill = #FFFFFF
-  $background = #0F1340
+    $fill = #FFFFFF
+    $start = #DA7905
+    $end = #E09B48

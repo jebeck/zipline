@@ -1,23 +1,33 @@
 #!/usr/bin/env node
 
 var rosetta = require('rosetta');
+var fmt = require('util').format;
+
+var config = process.argv[2];
 
 try {
-  var zipline = rosetta.compile(['src/rosetta/salt-cure.rose'], {
+  var example = rosetta.compile([fmt('example/rosetta/%s.rose', config)], {
+    jsFormat: 'commonjs',
+    cssFormat: 'less',
+    jsOut: 'example/util/colors.js',
+    cssOut: 'example/less/colors.less'
+  });
+  rosetta.writeFiles(example);
+  var zipline = rosetta.compile([fmt('src/rosetta/%s.rose', config)], {
     jsFormat: 'commonjs',
     cssFormat: 'less',
     jsOut: 'src/util/colors.js',
     cssOut: 'src/less/colors.less'
   });
   rosetta.writeFiles(zipline);
-  var activity = rosetta.compile(['activity/rosetta/salt-cure.rose'], {
+  var activity = rosetta.compile([fmt('activity/rosetta/%s.rose', config)], {
     jsFormat: 'commonjs',
     cssFormat: 'less',
     jsOut: 'activity/util/colors.js',
     cssOut: 'activity/less/colors.less'
   });
   rosetta.writeFiles(activity);
-  var diabetes = rosetta.compile(['diabetes/rosetta/salt-cure.rose'], {
+  var diabetes = rosetta.compile([fmt('diabetes/rosetta/%s.rose', config)], {
     jsFormat: 'commonjs',
     cssFormat: 'less',
     jsOut: 'diabetes/util/colors.js',
