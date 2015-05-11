@@ -54,6 +54,9 @@
     "webpack": "^1.8.9",
     "webpack-dev-server": "^1.8.2"
   },
+  "engines": {
+    "node": "0.10.x"
+  },
   "jest": {
     "rootDir": "./src",
     "scriptPreprocessor": "../preprocessor.js",
