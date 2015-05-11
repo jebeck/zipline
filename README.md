@@ -51,3 +51,13 @@ Now that the initial experiment has concluded---that is, I am reasonably satisfi
 	+ user-configurability (toggling on and off various elements of the display, as well as changing things like the units for a scale)
 	+ ability for designers and developers to iterate with a minimum of friction
 	+ testability
+
+## Repository Structure
+
+zipline, like its in-some-ways predecessor [tideline](https://github.com/tidepool-org/tideline 'GitHub: tideline') is a *library* for building certain types of visualizations (in particular: scrolling timelines of time-series data at the granularity of twenty-four hours in view at a time). This library, which is agnostic as to the type(s) of data being visualized, is contained in `src/`. Add-ons for visualizing specific types of data are found in `activity/` for activity data and `diabetes/` for diabetes data. `example/` contains a minimal example application that *uses* zipline; this example includes a daily view scrolling timeline chart configuration `daily.config.js`.
+
+Of the remaining directories not described:
+
+- `dev/` includes tools I find useful during development
+- `fontello/` includes the icon font I put together from the available permissively-licensed options on [Fontello](http://fontello.com/ 'Fontello')
+- `test/` includes the unit tests run on [mocha](http://mochajs.org/ 'Mocha') with [chai](http://chaijs.com/ 'Chai')
